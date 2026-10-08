@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дашборд офферов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --bg-glow: radial-gradient(1200px 420px at 15% -10%, #fdeecb99, transparent 60%),
+               radial-gradient(900px 380px at 100% 0%, #f6d9b855, transparent 55%);
+    --surface: #ffffff; --surface-alt: #f3f1ea; --border: #e6e2d6;
+    --text: #211f19; --text-muted: #6f6a5c; --text-faint: #a49e8c;
+    --accent: #b96a0c; --accent-strong: #8f5309; --accent-soft: #fbeed9;
+    --success: #1e7b4d; --success-soft: #e6f4ec;
+    --warning: #a5700a; --warning-soft: #fbf0da;
+    --danger: #c1392b; --danger-soft: #fbeae7;
+    --purple: #6b63c9; --purple-soft: #eceafa;
+    --blue: #3f6fa8; --blue-soft: #e6eef8;
+    --neutral-pill-bg: #edeae0; --neutral-pill-fg: #55503f;
+    --shadow: 0 1px 2px rgba(33,31,25,.05), 0 12px 28px -14px rgba(33,31,25,.16);
+    --shadow-lg: 0 4px 10px rgba(33,31,25,.06), 0 24px 48px -20px rgba(33,31,25,.22);
+    --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15140f;
+      --bg-glow: radial-gradient(1200px 420px at 15% -10%, #4a350f77, transparent 60%), radial-gradient(900px 380px at 100% 0%, #38270f66, transparent 55%);
+      --surface: #1e1c16; --surface-alt: #262319; --border: #38341f;
+      --text: #f1ede1; --text-muted: #b3ac96; --text-faint: #7d765f;
+      --accent: #e2963c; --accent-strong: #f0ac5c; --accent-soft: #362b16;
+      --success: #6fce9e; --success-soft: #1c3227; --warning: #e3b158; --warning-soft: #3a2e13;
+      --danger: #e8887c; --danger-soft: #3a2119; --purple: #afa9ec; --purple-soft: #2a2745;
+      --blue: #8fb3e0; --blue-soft: #1c2a3a; --neutral-pill-bg: #2c2919; --neutral-pill-fg: #cdc6ac;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.55);
+      --shadow-lg: 0 4px 10px rgba(0,0,0,.4), 0 24px 48px -20px rgba(0,0,0,.65);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15140f;
+    --bg-glow: radial-gradient(1200px 420px at 15% -10%, #4a350f77, transparent 60%), radial-gradient(900px 380px at 100% 0%, #38270f66, transparent 55%);
+    --surface: #1e1c16; --surface-alt: #262319; --border: #38341f;
+    --text: #f1ede1; --text-muted: #b3ac96; --text-faint: #7d765f;
+    --accent: #e2963c; --accent-strong: #f0ac5c; --accent-soft: #362b16;
+    --success: #6fce9e; --success-soft: #1c3227; --warning: #e3b158; --warning-soft: #3a2e13;
+    --danger: #e8887c; --danger-soft: #3a2119; --purple: #afa9ec; --purple-soft: #2a2745;
+    --blue: #8fb3e0; --blue-soft: #1c2a3a; --neutral-pill-bg: #2c2919; --neutral-pill-fg: #cdc6ac;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.55);
+    --shadow-lg: 0 4px 10px rgba(0,0,0,.4), 0 24px 48px -20px rgba(0,0,0,.65);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); background-image: var(--bg-glow); background-repeat: no-repeat; color: var(--text); font-size: 15px; line-height: 1.45; min-height: 100vh; }
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in { animation: fadeIn .4s ease-out both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .skeleton::after { animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  }
+  .skeleton { position: relative; overflow: hidden; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 14px; }
+  .skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 22px 20px 64px; }
+  .ribbon { background: var(--warning-soft); color: var(--warning); border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent); border-radius: 12px; padding: 8px 14px; font-size: 13px; margin-bottom: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.15; margin: 0 0 4px; letter-spacing: -.01em; font-weight: 800; }
+  .sub { color: var(--text-muted); font-size: 13.5px; }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  button, select, input[type=search] { font-family: inherit; font-size: 14px; color: var(--text); }
+  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; cursor: pointer; box-shadow: var(--shadow); }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .btn.ghost { box-shadow: none; background: transparent; }
+  .btn[disabled] { opacity: .55; cursor: not-allowed; }
+  .btn:focus-visible, select:focus-visible, input:focus-visible, .tile:focus-visible, .row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; box-shadow: var(--shadow); margin-bottom: 14px; }
+  .filters select, .filters input[type=search] { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; min-width: 0; }
+  .filters input[type=search] { flex: 1 1 200px; }
+  .filters label.chk { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); }
+  .filters .spacer { flex: 1; }
+  .filter-ind { font-size: 12.5px; color: var(--accent-strong); background: var(--accent-soft); border-radius: 999px; padding: 3px 10px; }
+  nav.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  nav.tabs button { background: none; border: none; padding: 10px 14px; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: 14.5px; }
+  nav.tabs button[aria-selected=true] { color: var(--accent-strong); border-bottom-color: var(--accent); }
+  nav.tabs .cnt { margin-left: 6px; background: var(--neutral-pill-bg); color: var(--neutral-pill-fg); border-radius: 999px; padding: 1px 7px; font-size: 12px; }
+  h2 { font-family: var(--font-display); font-size: 17px; margin: 26px 0 10px; font-weight: 800; letter-spacing: -.005em; }
+  h2 small { font-family: var(--font-body); font-weight: 400; color: var(--text-muted); font-size: 13px; margin-left: 8px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); cursor: pointer; text-align: left; }
+  .tile:hover { border-color: var(--accent); transform: translateY(-1px); transition: .15s; }
+  .tile .n { font-family: var(--font-display); font-size: 30px; font-weight: 800; line-height: 1.05; }
+  .tile .l { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; }
+  .tile .d { font-size: 12px; margin-top: 6px; color: var(--text-faint); }
+  .tile.hot .n { color: var(--danger); } .tile.ok .n { color: var(--success); } .tile.acc .n { color: var(--accent-strong); } .tile.blue .n { color: var(--blue); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; }
+  .signals { display: grid; gap: 8px; }
+  .signal { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; text-align: left; width: 100%; }
+  .signal:hover { border-color: var(--accent); }
+  .signal .badge { min-width: 32px; text-align: center; border-radius: 999px; font-weight: 800; padding: 3px 9px; font-family: var(--font-display); }
+  .signal.red .badge { background: var(--danger-soft); color: var(--danger); } .signal.yellow .badge { background: var(--warning-soft); color: var(--warning); } .signal.zero .badge { background: var(--success-soft); color: var(--success); }
+  .signal .t { font-weight: 600; } .signal .r { color: var(--text-muted); font-size: 12.5px; }
+  .signal .go { margin-left: auto; color: var(--text-faint); }
+  .funnel { display: grid; gap: 8px; }
+  .f-row { display: grid; grid-template-columns: 190px 1fr 120px; gap: 10px; align-items: center; font-size: 14px; }
+  .bar { height: 22px; background: var(--surface-alt); border-radius: 8px; position: relative; overflow: hidden; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 8px; opacity: .9; }
+  .bar b { position: absolute; inset: 0 auto 0 0; background: var(--danger); opacity: .85; border-radius: 8px; }
+  .f-row .c { text-align: right; color: var(--text-muted); font-size: 13px; }
+  .pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .pill.blue { background: var(--blue-soft); color: var(--blue); } .pill.amber { background: var(--accent-soft); color: var(--accent-strong); } .pill.purple { background: var(--purple-soft); color: var(--purple); }
+  .pill.green { background: var(--success-soft); color: var(--success); } .pill.red { background: var(--danger-soft); color: var(--danger); } .pill.yellow { background: var(--warning-soft); color: var(--warning); } .pill.gray { background: var(--neutral-pill-bg); color: var(--neutral-pill-fg); }
+  .list { display: grid; gap: 8px; }
+  .row { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(130px, 1.1fr) minmax(100px, .8fr) minmax(150px, 1.4fr) 90px; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; cursor: pointer; text-align: left; width: 100%; box-shadow: var(--shadow); }
+  .row:hover { border-color: var(--accent); }
+  .row .nm { font-weight: 700; } .row .mut { color: var(--text-muted); font-size: 13px; }
+  .row .days { text-align: right; font-size: 13px; color: var(--text-muted); } .row .days.late { color: var(--danger); font-weight: 700; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; align-items: start; }
+  .col { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
+  .col h3 { font-family: var(--font-display); font-size: 14px; margin: 2px 4px 8px; display: flex; justify-content: space-between; }
+  .mini { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; cursor: pointer; font-size: 13.5px; width: 100%; text-align: left; }
+  .mini:hover { border-color: var(--accent); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.t th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  table.t td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.t tr:last-child td { border-bottom: none; }
+  .prog { height: 9px; background: var(--surface-alt); border-radius: 999px; overflow: hidden; min-width: 90px; } .prog i { display: block; height: 100%; background: var(--success); border-radius: 999px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+  .chart { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding: 6px 2px 0; }
+  .chart .b { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; min-width: 0; }
+  .chart .b span { font-size: 11.5px; color: var(--text-muted); } .chart .b div { width: 100%; border-radius: 8px 8px 3px 3px; background: var(--accent); }
+  .chart .b div.l { background: var(--blue); } .chart .b div.s { background: var(--success); }
+  .legend { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-muted); margin-top: 8px; flex-wrap: wrap; } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+  .note { color: var(--text-muted); font-size: 13px; }
+  .gap-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(20,18,12,.5); display: none; align-items: flex-start; justify-content: center; padding: 5vh 14px; z-index: 50; overflow: auto; }
+  .modal-bg.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-lg); width: min(820px, 100%); padding: 20px 22px 24px; position: relative; }
+  .modal h3 { font-family: var(--font-display); font-size: 20px; margin: 0 0 4px; font-weight: 800; padding-right: 36px; }
+  .close { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-alt); cursor: pointer; font-size: 18px; }
+  .kv { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 4px; font-size: 14px; color: var(--text-muted); } .kv b { color: var(--text); }
+  ol.timeline { list-style: none; padding: 0; margin: 12px 0 0; }
+  ol.timeline li { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; padding: 7px 0; border-left: 2px solid var(--border); margin-left: 12px; padding-left: 14px; position: relative; align-items: center; }
+  ol.timeline li::before { content: ""; position: absolute; left: -7px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); }
+  ol.timeline li.done::before { background: var(--success); border-color: var(--success); } ol.timeline li.cur::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); } ol.timeline li.bad::before { background: var(--danger); border-color: var(--danger); }
+  ol.timeline li .s { grid-column: 2; font-weight: 600; } ol.timeline li .w { color: var(--text-muted); font-size: 12.5px; text-align: right; }
+  ol.timeline li.pend .s { color: var(--text-faint); font-weight: 400; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .empty { text-align: center; color: var(--text-muted); padding: 24px 8px; }
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: .25s; z-index: 80; } .toast.show { opacity: 1; }
+  footer { margin-top: 34px; color: var(--text-faint); font-size: 12.5px; text-align: center; }
+  @media (max-width: 720px) {
+    h1 { font-size: 22px; } .row { grid-template-columns: 1fr 1fr; } .row .days { text-align: left; }
+    .f-row { grid-template-columns: 110px 1fr 70px; font-size: 13px; }
+  }
+  [hidden] { display: none !important; }
+  .login { max-width: 520px; margin: 48px auto; text-align: center; padding: 28px 24px; }
+  .login .btn.primary { display: inline-block; text-decoration: none; padding: 11px 20px; font-size: 15px; }
+  a.btn { text-decoration: none; display: inline-block; }
+  .err { border-color: var(--danger); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ribbon" role="note" id="ribbon" hidden></div>
+  <header class="top">
+    <div>
+      <h1>Офферы — статус кандидатов</h1>
+      <div class="sub" id="updated">Загрузка…</div>
+      <div class="sub" id="who"></div>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="refresh" aria-label="Обновить данные">↻ Обновить</button>
+      <button class="btn" id="theme" aria-label="Переключить тему">🌓 Тема</button>
+      <button class="btn ghost" id="logout">Выйти</button>
+    </div>
+  </header>
+
+  <div id="login" class="card login" hidden>
+    <h2 style="margin-top:0">Вход в дашборд офферов</h2>
+    <p class="note">Вход через Telegram. Вы увидите офферы, в которых участвуете (подали, согласуете, ТУ вашего бара). Руководители видят всё.</p>
+    <a class="btn primary" id="login-link" href="#">Войти через Telegram</a>
+    <p class="note" style="margin-top:14px">Хотите сначала посмотреть, как это выглядит? <a href="?demo=1">Демо на вымышленных данных</a>.</p>
+  </div>
+
+  <div id="app" hidden>
+    <section class="filters" aria-label="Фильтры">
+      <input type="search" id="q" placeholder="Поиск: кандидат, должность, бар…" aria-label="Поиск">
+      <select id="f-period" aria-label="Период"><option value="30">Последние 30 дней</option><option value="7">Последние 7 дней</option><option value="90">Последние 90 дней</option><option value="3650">За всё время</option></select>
+      <select id="f-path" aria-label="Путь"><option value="">Все пути</option><option value="line">Линейка (без согласования)</option><option value="appr">С согласованием</option><option value="old">Старый путь (УК)</option></select>
+      <select id="f-status" aria-label="Статус"><option value="">Все статусы</option><option>В работе</option><option>Ждёт решения</option><option>Подписан</option><option>Не состоялся</option></select>
+      <select id="f-brand" aria-label="Бренд"><option value="">Все бренды</option></select>
+      <select id="f-recruiter" aria-label="Кто подал"><option value="">Все рекруты</option></select>
+      <label class="chk"><input type="checkbox" id="f-done"> Показывать завершённые в списке</label>
+      <span class="spacer"></span>
+      <span class="filter-ind" id="ind" hidden></span>
+      <button class="btn" id="share">🔗 Ссылка на срез</button>
+      <button class="btn" id="reset">Сбросить фильтры</button>
+    </section>
+
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="main" aria-selected="true">Основное</button>
+      <button role="tab" data-tab="appr" aria-selected="false">Согласования</button>
+      <button role="tab" data-tab="line" aria-selected="false">Линейка и кадры</button>
+      <button role="tab" data-tab="data" aria-selected="false">Данные и шаблоны <span class="cnt" id="gaps-cnt"></span></button>
+      <button role="tab" data-tab="stat" aria-selected="false">Метрики</button>
+    </nav>
+    <main id="view"></main>
+  </div>
+  <footer>Дашборд офферов · персональные данные кандидатов не показываются</footer>
+</div>
+<div class="modal-bg" id="modal-bg"><div class="modal" role="dialog" aria-modal="true" id="modal"><button class="close" id="close" aria-label="Закрыть">×</button><div id="modal-body"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== настройки =====================
+const API_BASE = "https://dash.89-207-252-54.sslip.io";
+const BOT_USERNAME = "offers_bar_bot";
+const qs = new URLSearchParams(location.search);
+const DEMO = qs.get("demo") === "1";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const PATH = { line: { label: "Линейка", cls: "blue" }, appr: { label: "С согласованием", cls: "amber" }, old: { label: "Старый путь (УК)", cls: "purple" } };
+const statusCls = { "В работе": "blue", "Ждёт решения": "yellow", "Подписан": "green", "Не состоялся": "red" };
+const pluralDays = n => n === 0 ? "сегодня" : n % 10 === 1 && n % 100 !== 11 ? `${n} день` : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${n} дня` : `${n} дней`;
+const safeGet = k => { try { return sessionStorage.getItem(k); } catch { return null; } };
+const safeSet = (k, v) => { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} };
+
+// ===================== данные =====================
+let OFFERS = [], ME = { username: "", full_access: false, is_tu: false, tabs: ["main", "appr", "line"] }, ANALYTICS = null, GAPS = null, UPDATED = "";
+
+// Серверный оффер -> форма, с которой работают вкладки ниже
+function norm(o) {
+  return { ...o, created: o.created_days, daysOnStage: o.days_on_stage, failReason: o.fail_reason, main_row_num: o.row,
+    hasHr: !!o.hr, hr: o.hr || { total: 0, done: 0, missing: [], complete: false } };
+}
+
+function buildDemo() {
+  let seed = 20261009;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const wpick = pairs => { let t = pairs.reduce((s, p) => s + p[1], 0), r = rnd() * t; for (const [v, w] of pairs) { if ((r -= w) < 0) return v; } return pairs[0][0]; };
+  const MALE = [["Смирнов","Кузнецов","Попов","Васильев","Петров","Соколов","Михайлов","Новиков","Фёдоров","Морозов","Волков","Алексеев","Лебедев","Семёнов","Егоров"],["Павел","Артём","Денис","Глеб","Роман","Илья","Максим","Лев","Олег","Станислав"]];
+  const FEMALE = [["Смирнова","Кузнецова","Попова","Васильева","Петрова","Соколова","Михайлова","Новикова","Фёдорова","Морозова","Волкова","Алексеева","Лебедева","Семёнова","Егорова"],["Анна","Мария","Елена","Ольга","Дарья","Ирина","Юлия","Алёна","Кира","Вера"]];
+  const fakeName = () => { const g = rnd() < .5 ? MALE : FEMALE; return `${pick(g[0])} ${pick(g[1])}`; };
+  const BARS = [["НБ МСК ПЯТ","НБ"],["НБ МСК ПОКР","НБ"],["НБ СПБ ЛИТ","НБ"],["НБ СПБ ЛОМ","НБ"],["НБ ЕКБ РАД","НБ"],["НБ НСК ЯДР","НБ"],["НБ СОЧ КУР","НБ"],["НБ ПРМ СОВ","НБ"],["РВ МСК ТВЕР","РВ"],["РВ МСК ТАГ","РВ"],["РВ МСК ОЛИМП","РВ"],["РВ ПЕРМЬ","РВ"],["РВ СПБ КУЛЬТ","РВ"],["РВ ЯР ПБ","РВ"],["РВ СПБ МОС","РВ"],["ЕВ СПБ НЕВ","Евгенич"],["ЕВ МСК ЦВЕТ","Евгенич"],["СП МСК","Сплетни"],["ОРБИТА МСК","Орбита/ШУМ"],["ШУМ","Орбита/ШУМ"]];
+  const LINE_POS = [["Хостес",9],["Официант",9],["Бармен",8],["Повар",6],["Менеджер зала",3],["Уборщица",2],["Техник ММ",2],["Кальянный мастер",2],["Бариста",1]];
+  const APPR_POS = [["Шеф-повар",4],["Бар-менеджер",4],["Арт-директор",2],["Управляющий",3],["Су-шеф",1],["Старший повар",1],["Старший бармен",1]];
+  const OLD_POS = [["Сетевой бар-менеджер",1],["Маркетолог",1],["Сетевой бренд-шеф",1]];
+  const RECR = ["Рекрут А", "Рекрут Б", "Рекрут В", "Менеджер бара (РВ ПЕРМЬ)"];
+  const SL = ["Анкета подана","Документ создан","PDF и NDA отправлены","Скан оффера загружен","Анкета для кадров"];
+  const SA = ["Анкета подана","Руководители Заказчика","Сетевой согласователь + ТУ","Проверка Светы","Финальное согласование","Скан оффера загружен","Анкета для кадров"];
+  const SO = ["Анкета подана","Руководители Заказчика","Проверка Светы","Финальное согласование","Скан оффера загружен","Анкета для кадров"];
+  const out = [];
+  for (let i = 0; i < 74; i++) {
+    const path = wpick([["line", 66], ["appr", 24], ["old", 10]]);
+    const [bar, brand] = pick(BARS);
+    const position = wpick(path === "line" ? LINE_POS : path === "appr" ? APPR_POS : OLD_POS);
+    const steps = path === "line" ? SL : path === "appr" ? SA : SO;
+    const created = Math.floor(rnd() * 88) + (i < 14 ? 0 : 1);
+    const outcome = wpick([["signed", 56], ["active", 31], ["failed", 13]]);
+    const hrIdx = steps.indexOf("Анкета для кадров");
+    let cur = outcome === "signed" ? steps.length : Math.floor(rnd() * (hrIdx - 0)) + 1;
+    if (outcome !== "signed" && cur >= hrIdx) cur = hrIdx - 1;
+    const o = { id: "d" + i, row: 5000 + i, tab: path === "line" ? "L" : path === "appr" ? "Б" : "A", candidate: fakeName(), position, bar, brand, path, steps, cur, created_days: created, outcome,
+      recruiter: pick(RECR), days_on_stage: 0, waiting: [], review: false, fail_reason: "", actionable: null };
+    if (outcome === "failed") o.fail_reason = pick(["Кандидат отказался","Отклонён согласующим","Кандидат торгуется"]);
+    if (outcome === "active") {
+      o.days_on_stage = wpick([[0, 4], [1, 5], [2, 4], [3, 3], [5, 2], [8, 1]]);
+      const s = steps[cur] || "";
+      if (path !== "line" && /Руководители|Сетевой|Света|Финальное/.test(s)) {
+        o.waiting = s.startsWith("Сетевой") ? [{ who: "Сетевой бренд-шеф", done: rnd() < .4 }, { who: "ТУ " + brand, done: false }]
+          : s.includes("Света") ? [{ who: "Света (проверка)", done: false }] : s.startsWith("Финальное") ? [{ who: "Финальный согласователь", done: false }] : [{ who: "Руководитель Заказчика", done: false }];
+      }
+      if (path === "line" && cur === 2 && rnd() < .3) o.review = true;
+    }
+    o.status = outcome === "signed" ? "Подписан" : outcome === "failed" ? "Не состоялся" : (o.waiting.length ? "Ждёт решения" : "В работе");
+    const hrDone = outcome === "signed" ? wpick([[10, 5], [8, 2], [6, 2], [3, 1]]) : 0;
+    const miss = ["Дети", "СНИЛС (скан)", "Договор о мат. ответственности (скан)", "ИНН (скан)", "Дата рождения", "Адрес постоянного проживания"];
+    o.hr = outcome === "failed" ? null : { total: 10, done: hrDone, missing: miss.slice(0, 10 - hrDone > 6 ? 6 : 10 - hrDone), complete: hrDone === 10 };
+    o.sb = path === "line" ? "Не требуется" : outcome === "signed" ? "Пройдена" : pick(["В процессе", "Пройдена", "Не начата"]);
+    out.push(o);
+  }
+  // несколько «показательных» случаев, чтобы сигналы не были пустыми
+  Object.assign(out[0], { path: "line", tab: "L", steps: SL, outcome: "active", cur: 2, review: true, status: "В работе", days_on_stage: 1, created_days: 1, position: "Бармен", waiting: [], hr: null });
+  Object.assign(out[1], { path: "appr", tab: "Б", steps: SA, outcome: "active", cur: 2, position: "Шеф-повар", days_on_stage: 2, status: "Ждёт решения", created_days: 3, sb: "Пройдена", hr: null, review: false, fail_reason: "",
+    waiting: [{ who: "Сетевой бренд-шеф", done: true }, { who: "ТУ НБ", done: false }] });
+  const analytics = { discipline_24h_pct: 83,
+    stage_speed: [{ label: "Руководители Заказчика", avg_hours: 6.4 }, { label: "Сетевой согласователь и ТУ (параллельно)", avg_hours: 9.1 }, { label: "Проверка Светы", avg_hours: 2.8 }, { label: "Финальное согласование", avg_hours: 14.7 }],
+    by_approver: [{ fio: "Света (проверка)", count: 31, avg_hours: 2.8, pct_within_24h: 100 }, { fio: "Финальный согласователь УК", count: 12, avg_hours: 15.5, pct_within_24h: 67 }, { fio: "ДК НБ (финал НБ)", count: 9, avg_hours: 11.2, pct_within_24h: 78 }, { fio: "Сетевой бренд-шеф", count: 8, avg_hours: 7.9, pct_within_24h: 88 }, { fio: "ТУ НБ МСК", count: 6, avg_hours: 10.3, pct_within_24h: 83 }] };
+  const gaps = {
+    bars_no_tu: { count: 14, items: ["НБ ТОМСК","НБ КАЗ ПУШК","НБ ЧЕЛН СЗ","ЭЧ СПБ ЛОМ","НБ ВЛГ КЛН","ЭЧ НВРСК СОВ","NEW СПБ ЛИТ","Ириски","ФАНКИ","Особняк","УК","РЕД НСК","Завидово","НБ ЛИТ"] },
+    managers_no_telegram: { count: 3, items: ["Менеджер зала РВБ МСК АВТО (2 чел.)", "Менеджер зала НБ СОЧ (1 чел.)"] },
+    coverage: [["Арт-директор", 31, 32], ["Бар-менеджер", 38, 40], ["Управляющий", 41, 44], ["Шеф-повар", 42, 42], ["Су-шеф", 4, 4], ["Старший повар", 8, 8], ["Старший бармен", 14, 14]].map(([position, covered, total]) => ({ position, covered, total })),
+    bars_no_template: [{ position: "Бар-менеджер", count: 2, items: ["НБ ПРМ СОВ", "РВ ЯР ПБ"] }, { position: "Управляющий", count: 3, items: ["ЭЧ СПБ ЛОМ", "НБ ТОМСК", "Ириски"] }, { position: "Арт-директор", count: 1, items: ["Завидово"] }],
+    objects_unresolved: { count: 29, items: ["РВ СПБ МОС", "НБ СОЧ КУР", "РВ ЕКБ РАД", "РВ РЯЗАНЬ", "НБ КРД БАБ"] } };
+  return { offers: out.map(norm), me: { username: "demo", full_access: true, is_tu: false, tabs: ["main", "appr", "line", "data", "stat"] }, analytics, gaps };
+}
+
+// ===================== загрузка =====================
+let loadedExtras = { analytics: false, gaps: false };
+async function fetchData(extra = {}) {
+  const token = safeGet("offers_token");
+  if (!token) return showLogin();
+  const p = new URLSearchParams();
+  if (extra.analytics) p.set("analytics", "1");
+  if (extra.gaps) p.set("gaps", "1");
+  p.set("period", ({ "7": "7d", "30": "30d", "90": "90d" })[state.period] || "all");
+  let res;
+  try { res = await fetch(`${API_BASE}/api/v2/dashboard?${p}`, { headers: { Authorization: "Bearer " + token } }); }
+  catch { return showError("Не получилось связаться с сервером дашборда. Проверьте интернет и нажмите «Обновить»."); }
+  if (res.status === 401) { safeSet("offers_token", null); return showLogin(); }
+  if (!res.ok) return showError("Сервер сейчас не может собрать данные (код " + res.status + "). Попробуйте через минуту.");
+  const d = await res.json();
+  OFFERS = d.offers.map(norm); ME = d.me; UPDATED = d.updated_at;
+  if (d.analytics) { ANALYTICS = d.analytics; loadedExtras.analytics = true; }
+  if (d.gaps) { GAPS = d.gaps; loadedExtras.gaps = true; }
+  showApp();
+}
+function setView(html) { $("view").innerHTML = html; }
+function showLogin() { $("app").hidden = true; $("login").hidden = false; $("who").textContent = ""; $("updated").textContent = ""; $("login-link").href = API_BASE + "/auth/pages-login"; $("logout").hidden = true; $("refresh").hidden = true; }
+function showError(msg) { $("login").hidden = true; $("app").hidden = false; setView(`<div class="card err"><b>Не получилось загрузить данные</b><p class="note">${esc(msg)}</p><button class="btn primary" onclick="reload()">Попробовать снова</button></div>`); }
+function showApp() {
+  $("login").hidden = true; $("app").hidden = false;
+  const who = DEMO ? "Демо-режим · вымышленные данные" : `@${ME.username} · ${ME.full_access ? "видите все офферы" : ME.is_tu ? "свои офферы и офферы ваших баров (ТУ)" : "только офферы, где вы участвуете"}`;
+  $("who").textContent = who;
+  if (UPDATED) { const t = new Date(UPDATED); $("updated").textContent = "Обновлено: " + t.toLocaleString("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); }
+  fillSelects(); applyTabs(); syncControls(); render();
+}
+function applyTabs() {
+  document.querySelectorAll("#tabs button").forEach(b => { b.hidden = !ME.tabs.includes(b.dataset.tab); });
+  if (!ME.tabs.includes(state.tab)) state.tab = "main";
+}
+function fillSelects() {
+  const fill = (id, vals, keep) => { const el = $(id), cur = el.value; el.innerHTML = el.options[0].outerHTML + vals.map(v => `<option>${esc(v)}</option>`).join(""); el.value = vals.includes(cur) ? cur : (vals.includes(keep) ? keep : ""); };
+  fill("f-brand", [...new Set(OFFERS.map(o => o.brand).filter(Boolean))].sort(), state.brand);
+  fill("f-recruiter", [...new Set(OFFERS.map(o => o.recruiter).filter(Boolean))].sort(), state.recruiter);
+}
+async function reload() {
+  $("updated").textContent = "Обновляю…";
+  if (DEMO) { const d = buildDemo(); OFFERS = d.offers; ME = d.me; ANALYTICS = d.analytics; GAPS = d.gaps; UPDATED = new Date().toISOString(); return showApp(); }
+  await fetchData({ analytics: loadedExtras.analytics, gaps: loadedExtras.gaps });
+}
+
+// ===================== фильтры и состояние =====================
+const DEF = { tab: "main", q: "", period: "30", path: "", status: "", brand: "", recruiter: "", done: false };
+const state = { ...DEF };
+for (const k of Object.keys(state)) if (qs.has(k)) state[k] = k === "done" ? qs.get(k) === "1" : qs.get(k);
+function syncControls() { $("q").value = state.q; $("f-period").value = state.period; $("f-path").value = state.path; $("f-status").value = state.status; $("f-brand").value = state.brand; $("f-recruiter").value = state.recruiter; $("f-done").checked = state.done; }
+function syncURL() {
+  const p = new URLSearchParams();
+  if (DEMO) p.set("demo", "1");
+  for (const k of Object.keys(state)) if (state[k] !== DEF[k]) p.set(k, k === "done" ? "1" : state[k]);
+  try { history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : "")); } catch {}
+}
+function filtered() {
+  const q = state.q.trim().toLowerCase(), per = +state.period;
+  return OFFERS.filter(o => o.created <= per &&
+    (!q || (o.candidate + " " + o.position + " " + o.bar).toLowerCase().includes(q)) &&
+    (!state.path || o.path === state.path) && (!state.status || o.status === state.status) &&
+    (!state.brand || o.brand === state.brand) && (!state.recruiter || o.recruiter === state.recruiter));
+}
+function activeFiltersCount() { return ["q", "path", "status", "brand", "recruiter"].filter(k => state[k]).length + (state.period !== "30" ? 1 : 0) + (state.done ? 1 : 0); }
+
+// ===================== вкладки =====================
+const lateDays = o => o.daysOnStage >= (o.waiting.length ? 1 : 3);
+const stepName = o => o.steps[Math.min(o.cur, o.steps.length - 1)] || "";
+function stageText(o) {
+  if (o.outcome === "signed") return o.hasHr && !o.hr.complete ? "Оффер подписан · ждём анкету для кадров" : "Оффер подписан";
+  if (o.outcome === "failed") return o.failReason;
+  if (o.review) return "На проверке у Светы";
+  return stepName(o);
+}
+function signals(list) {
+  const act = list.filter(o => o.outcome === "active");
+  return [
+    { cls: "red", t: "Ждёт решения дольше суток", r: "согласующий не ответил за 24 часа и больше", items: act.filter(o => o.waiting.length && o.daysOnStage >= 1) },
+    { cls: "red", t: "Оффер на проверке у Светы", r: "владелец нажал «Оффер некорректен» — ждёт исправления", items: act.filter(o => o.review) },
+    { cls: "yellow", t: "СБ: документы не донесены", r: "статус «Не начата» дольше 2 дней", items: act.filter(o => o.sb === "Не начата" && o.daysOnStage >= 2) },
+    { cls: "yellow", t: "Анкета для кадров не заполнена", r: "оффер подписан, пунктов не хватает", items: list.filter(o => o.outcome === "signed" && o.hasHr && !o.hr.complete) },
+  ];
+}
+function rowHTML(o) {
+  const late = o.outcome === "active" && lateDays(o);
+  return `<button class="row fade-in" data-id="${esc(o.id)}">
+    <div><div class="nm">${esc(o.candidate)}</div><div class="mut">${esc(o.position)} · ${esc(o.bar)}</div></div>
+    <div><span class="pill ${PATH[o.path].cls}">${PATH[o.path].label}</span></div>
+    <div><span class="pill ${statusCls[o.status]}">${o.status}</span></div>
+    <div class="mut">${esc(stageText(o))}${o.waiting.length ? " · " + o.waiting.map(w => esc(w.who) + (w.done ? " ✓" : "")).join(", ") : ""}</div>
+    <div class="days ${late ? "late" : ""}">${o.outcome === "active" ? pluralDays(o.daysOnStage) : "—"}</div></button>`;
+}
+const tile = (n, l, d, cls, fn) => `<button class="tile ${cls} fade-in" data-list="${fn}"><div class="n">${n}</div><div class="l">${l}</div><div class="d">${d}</div></button>`;
+function tab_main(list) {
+  const act = list.filter(o => o.outcome === "active"), sig = signals(list), cand = list.filter(o => state.done || o.outcome === "active");
+  const approvedDone = o => o.outcome === "signed" || o.path === "line" || ["Скан оффера загружен", "Анкета для кадров"].includes(stepName(o));
+  const funnelRows = [
+    ["Подано", list.length, act.filter(o => o.waiting.length && o.daysOnStage >= 2).length],
+    ["Прошли согласование", list.filter(approvedDone).length, act.filter(o => o.review).length],
+    ["Подписан оффер", list.filter(o => o.outcome === "signed").length, 0],
+    ["Анкета для кадров полная", list.filter(o => o.outcome === "signed" && o.hasHr && o.hr.complete).length, list.filter(o => o.outcome === "signed" && o.hasHr && !o.hr.complete).length],
+  ];
+  const max = Math.max(...funnelRows.map(r => r[1]), 1);
+  return `
+  <div class="tiles">
+    ${tile(list.length, "Всего за период", "подано офферов", "", "all")}
+    ${tile(act.length, "В работе", "ещё не подписаны", "blue", "act")}
+    ${tile(act.filter(o => o.waiting.length).length, "Ждут решения", `из них дольше суток: ${act.filter(o => o.waiting.length && o.daysOnStage >= 1).length}`, "hot", "wait")}
+    ${tile(list.filter(o => o.path === "line").length, "Линейка", "без согласования", "blue", "line")}
+    ${tile(list.filter(o => o.outcome === "signed").length, "Подписано", "оффер подписан", "ok", "signed")}
+    ${tile(list.filter(o => o.outcome === "failed").length, "Не состоялись", "отказ, торги, отклонён", "", "failed")}
+  </div>
+  <h2>Требует внимания сегодня</h2>
+  <div class="signals">${sig.map((s, i) => `<button class="signal ${s.items.length ? s.cls : "zero"} fade-in" data-sig="${i}"><span class="badge">${s.items.length}</span><span><div class="t">${s.t}</div><div class="r">${s.r}</div></span><span class="go">${s.items.length ? "Показать →" : "всё в порядке"}</span></button>`).join("")}</div>
+  <h2>Воронка <small>красным — застряло или ждёт</small></h2>
+  <div class="card funnel">${funnelRows.map(([l, n, late]) => `<div class="f-row"><div>${l}</div><div class="bar"><i style="width:${100 * n / max}%"></i><b style="width:${100 * late / max}%"></b></div><div class="c">${n}${late ? ` · застряло ${late}` : ""}</div></div>`).join("")}</div>
+  <h2>Кандидаты <small>${cand.length} по текущим фильтрам${state.done ? "" : " · завершённые скрыты"}</small></h2>
+  <div class="list" id="cand">${cand.length ? cand.slice().sort((a, b) => (b.outcome === "active") - (a.outcome === "active") || b.daysOnStage - a.daysOnStage).slice(0, 40).map(rowHTML).join("") : emptyBlock()}</div>`;
+}
+function emptyBlock() {
+  return OFFERS.length ? '<div class="empty">Ничего не найдено — попробуйте изменить фильтры.</div>'
+    : '<div class="empty">Пока нет ни одного оффера, в котором вы участвуете. Когда подадите или согласуете оффер через бота — он появится здесь. Посмотреть, как это выглядит: <a href="?demo=1">демо</a>.</div>';
+}
+function tab_appr(list) {
+  const act = list.filter(o => o.outcome === "active" && o.path !== "line");
+  const who = {};
+  for (const o of act) for (const w of o.waiting) if (!w.done) (who[w.who] = who[w.who] || []).push(o);
+  const rowsW = Object.entries(who).sort((a, b) => b[1].length - a[1].length);
+  const par = act.filter(o => o.waiting.length === 2);
+  let speedHtml, approverHtml;
+  if (!ME.full_access) {
+    speedHtml = approverHtml = '<div class="card"><div class="note">Скорость согласований и рейтинг согласующих видят только руководители.</div></div>';
+  } else if (!ANALYTICS) {
+    speedHtml = approverHtml = '<div class="card"><div class="note">Считаю скорость согласований…</div></div>';
+  } else {
+    const speed = ANALYTICS.stage_speed || [], maxS = Math.max(...speed.map(s => s.avg_hours), 1);
+    speedHtml = `<div class="card funnel">${speed.length ? speed.map(s => `<div class="f-row"><div>${esc(s.label)}</div><div class="bar"><i style="width:${100 * s.avg_hours / maxS}%"></i></div><div class="c">${s.avg_hours} ч</div></div>`).join("") : '<div class="note">Пока недостаточно решений для расчёта.</div>'}${ANALYTICS.discipline_24h_pct != null ? `<p class="note" style="margin:6px 0 0">${ANALYTICS.discipline_24h_pct}% решений принято быстрее чем за 24 часа.</p>` : ""}</div>`;
+    const ap = ANALYTICS.by_approver || [];
+    approverHtml = `<div class="card"><table class="t"><thead><tr><th>Согласующий</th><th>Решений</th><th>Ср. время</th><th>В пределах суток</th></tr></thead><tbody>${ap.length ? ap.map(r => `<tr><td>${esc(r.fio)}</td><td>${r.count}</td><td>${r.avg_hours} ч</td><td><div class="prog"><i style="width:${r.pct_within_24h}%"></i></div> ${r.pct_within_24h}%</td></tr>`).join("") : '<tr><td colspan="4" class="empty">Пока нет решений за период.</td></tr>'}</tbody></table></div>`;
+  }
+  return `
+  <h2>Очередь по людям <small>кто сейчас держит офферы</small></h2>
+  <div class="card"><table class="t"><thead><tr><th>Согласующий</th><th>Ждёт решения</th><th>Дольше суток</th><th>Самый старый</th></tr></thead><tbody>
+    ${rowsW.length ? rowsW.map(([w, os]) => `<tr><td><b>${esc(w)}</b></td><td>${os.length}</td><td>${os.filter(o => o.daysOnStage >= 1).length ? `<span class="pill red">${os.filter(o => o.daysOnStage >= 1).length}</span>` : '<span class="pill green">0</span>'}</td><td>${pluralDays(Math.max(...os.map(o => o.daysOnStage)))}</td></tr>`).join("") : '<tr><td colspan="4" class="empty">Сейчас никто ничего не держит.</td></tr>'}</tbody></table></div>
+  <div class="grid2">
+   <div><h2>Скорость по этапам <small>среднее время, часов</small></h2>${speedHtml}</div>
+   <div><h2>Параллельное согласование <small>сетевой + ТУ</small></h2><div class="card">
+     ${par.length ? par.map(o => `<button class="mini" data-id="${esc(o.id)}"><b>${esc(o.candidate)}</b> · ${esc(o.position)} · ${esc(o.bar)}<div class="chips">${o.waiting.map(w => `<span class="pill ${w.done ? "green" : "yellow"}">${w.done ? "✓" : "⏳"} ${esc(w.who)}</span>`).join("")}</div></button>`).join("") : '<div class="empty">Сейчас нет офферов в параллельном согласовании.</div>'}
+     <p class="note" style="margin:8px 0 0">Оффер идёт дальше к Свете, когда согласовали оба.</p></div></div>
+  </div>
+  <h2>Кто чаще задерживает <small>за период</small></h2>${approverHtml}`;
+}
+function tab_line(list) {
+  const l = list.filter(o => o.path === "line" && o.outcome !== "failed");
+  const lanes = [
+    ["Документ создаётся", o => o.outcome === "active" && !o.review && o.cur <= 1],
+    ["На проверке у Светы", o => o.review],
+    ["Документ у владельца: PDF и скан", o => o.outcome === "active" && !o.review && o.cur >= 2],
+    ["Подписано, ждём анкету кадров", o => o.outcome === "signed" && o.hasHr && !o.hr.complete],
+    ["Готово", o => o.outcome === "signed" && !(o.hasHr && !o.hr.complete)],
+  ];
+  const hr = list.filter(o => o.outcome === "signed" && o.hasHr).sort((a, b) => a.hr.done - b.hr.done).slice(0, 15);
+  return `
+  <h2>Лента линейки <small>${l.length} офферов без согласования</small></h2>
+  <div class="cols">${lanes.map(([t, f]) => { const os = l.filter(f); return `<div class="col"><h3>${t}<span class="pill gray">${os.length}</span></h3>${os.slice(0, 5).map(o => `<button class="mini" data-id="${esc(o.id)}"><b>${esc(o.candidate)}</b><div class="mut">${esc(o.position)} · ${esc(o.bar)}</div></button>`).join("") || '<div class="note" style="padding:4px">пусто</div>'}${os.length > 5 ? `<div class="note" style="padding:2px 4px">…и ещё ${os.length - 5}</div>` : ""}</div>`; }).join("")}</div>
+  <h2>Анкета для кадров <small>прогресс, без личных данных</small></h2>
+  <div class="card"><table class="t"><thead><tr><th>Кандидат</th><th>Должность · бар</th><th>Заполнено</th><th>Не хватает</th></tr></thead><tbody>
+    ${hr.map(o => `<tr><td><button class="btn ghost" style="padding:0;border:none;font-weight:700;cursor:pointer" data-id="${esc(o.id)}">${esc(o.candidate)}</button></td><td>${esc(o.position)} · ${esc(o.bar)}</td><td><div class="prog"><i style="width:${o.hr.total ? 100 * o.hr.done / o.hr.total : 0}%"></i></div> ${o.hr.done}/${o.hr.total}</td><td>${o.hr.complete ? '<span class="pill green">всё</span>' : o.hr.missing.slice(0, 3).map(m => `<span class="pill yellow">${esc(m)}</span>`).join(" ")}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">Нет подписанных офферов с анкетой для кадров за период.</td></tr>'}</tbody></table>
+    <p class="note" style="margin:8px 0 0">Бот напоминает о недостающем каждые несколько часов. Дата рождения, адрес, ИНН и СНИЛС здесь не показываются.</p></div>`;
+}
+function gapCard(title, g, hint) {
+  if (g === null || g === undefined) return `<div class="card"><b>${title}</b><div class="note">Не удалось прочитать данные — попробуйте обновить.</div></div>`;
+  return `<div class="card fade-in"><div style="display:flex;justify-content:space-between;gap:8px"><b>${title}</b><span class="pill ${g.count ? "yellow" : "green"}">${g.count || "ок"}</span></div><div class="note">${hint}</div><div class="gap-list">${(g.items || []).map(i => `<span class="pill gray">${esc(i)}</span>`).join("")}</div></div>`;
+}
+function tab_data() {
+  if (!GAPS) return '<div class="card"><div class="note">Загружаю данные по таблицам…</div></div>';
+  const cov = GAPS.coverage;
+  return `
+  <h2>Покрытие шаблонов по барам <small>у скольких баров из таблицы есть шаблон должности</small></h2>
+  <div class="card">${cov ? `<table class="t"><thead><tr><th>Должность</th><th>Покрытие</th><th>Баров с шаблоном</th></tr></thead><tbody>
+  ${cov.map(c => `<tr><td><b>${esc(c.position)}</b></td><td style="width:45%"><div class="prog"><i style="width:${c.total ? 100 * c.covered / c.total : 0}%;${c.covered < c.total ? "background:var(--warning)" : ""}"></i></div></td><td>${c.covered} из ${c.total} ${c.covered === c.total ? '<span class="pill green">полностью</span>' : c.covered / c.total >= 0.6 ? '<span class="pill yellow">есть пробелы</span>' : '<span class="pill gray">должность есть не у всех баров</span>'}</td></tr>`).join("")}</tbody></table>` : '<div class="note">Не удалось прочитать таблицу шаблонов.</div>'}</div>
+  <h2>Что нужно заполнить или исправить</h2>
+  <div class="grid2">
+    ${gapCard("Бары без ТУ в «Сетевые согласующие»", GAPS.bars_no_tu, "Оффер Шеф-повара, Бар-менеджера или Арт-директора на таком баре встанет на паузу")}
+    ${gapCard("Менеджеры зала без Telegram в справочнике", GAPS.managers_no_telegram, "Не смогут подавать заявки через бота")}
+    ${(GAPS.bars_no_template || []).map(g => gapCard("Нет шаблона: " + esc(g.position), g, "Анкета остановится и уйдёт в «Не найден шаблон оффера»")).join("")}
+    ${gapCard("Бары без определённых города и концепции", GAPS.objects_unresolved, "Бот спрашивает город и концепцию вручную")}
+  </div>`;
+}
+function tab_stat(list) {
+  const signed = list.filter(o => o.outcome === "signed"), failed = list.filter(o => o.outcome === "failed");
+  const withHr = signed.filter(o => o.hasHr), hrFull = withHr.filter(o => o.hr.complete);
+  const pct = (a, b) => b ? Math.round(100 * a / b) + "%" : "—";
+  const monthKey = o => { const d = new Date(Date.now() - o.created * 86400000); return d.getFullYear() * 12 + d.getMonth(); };
+  const months = {};
+  for (const o of list) { const k = monthKey(o); (months[k] = months[k] || { n: 0, s: 0 }).n++; if (o.outcome === "signed") months[k].s++; }
+  const names = ["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
+  const mkeys = Object.keys(months).map(Number).sort((a, b) => a - b).slice(-6), maxM = Math.max(...mkeys.map(k => months[k].n), 1);
+  const cnt = (key) => { const m = {}; for (const o of list) m[o[key]] = (m[o[key]] || 0) + 1; return Object.entries(m).filter(e => e[0]).sort((a, b) => b[1] - a[1]); };
+  const bars = cnt("bar").slice(0, 8), recs = cnt("recruiter"), maxB = Math.max(...bars.map(b => b[1]), 1), maxR = Math.max(...recs.map(b => b[1]), 1);
+  const bar = (rows, mx) => rows.map(([b, n]) => `<div class="f-row"><div>${esc(b)}</div><div class="bar"><i style="width:${100 * n / mx}%"></i></div><div class="c">${n}</div></div>`).join("") || '<div class="empty">Нет данных</div>';
+  return `
+  <div class="tiles">
+    <div class="tile"><div class="n">${list.length}</div><div class="l">Подано офферов</div><div class="d">за выбранный период</div></div>
+    <div class="tile ok"><div class="n">${pct(signed.length, list.length)}</div><div class="l">Дошли до подписи</div><div class="d">${signed.length} из ${list.length}</div></div>
+    <div class="tile"><div class="n">${pct(failed.length, list.length)}</div><div class="l">Не состоялись</div><div class="d">отказ кандидата, торги, отклонён</div></div>
+    <div class="tile blue"><div class="n">${pct(hrFull.length, withHr.length)}</div><div class="l">Анкета для кадров заполнена полностью</div><div class="d">среди подписанных</div></div>
+  </div>
+  <div class="grid2">
+    <div><h2>Офферы по месяцам</h2><div class="card">${mkeys.length ? `<div class="chart">${mkeys.map(k => `<div class="b"><span>${months[k].n}</span><div style="height:${Math.max(4, 120 * months[k].n / maxM)}px"></div><span>${names[k % 12]}</span></div>`).join("")}</div><div class="legend"><span><i style="background:var(--accent)"></i>подано</span></div>` : '<div class="empty">Нет данных</div>'}</div></div>
+    <div><h2>Топ баров <small>по текущим фильтрам</small></h2><div class="card funnel">${bar(bars, maxB)}</div></div>
+    <div><h2>Нагрузка рекрутов</h2><div class="card funnel">${bar(recs, maxR)}</div></div>
+    <div><h2>Линейка и согласуемые</h2><div class="card funnel">${["line", "appr", "old"].map(p => { const n = list.filter(o => o.path === p).length; return `<div class="f-row"><div>${PATH[p].label}</div><div class="bar"><i style="width:${100 * n / Math.max(list.length, 1)}%"></i></div><div class="c">${n}</div></div>`; }).join("")}</div></div>
+  </div>`;
+}
+const TABS = { main: tab_main, appr: tab_appr, line: tab_line, data: tab_data, stat: tab_stat };
+
+function render() {
+  syncURL();
+  const list = filtered(), n = activeFiltersCount();
+  $("ind").hidden = !n; $("ind").textContent = n ? `Фильтров включено: ${n}` : "";
+  $("gaps-cnt").textContent = GAPS ? [GAPS.bars_no_tu, GAPS.managers_no_telegram, GAPS.objects_unresolved].filter(g => g && g.count).length + (GAPS.bars_no_template || []).length || "" : "";
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === state.tab));
+  setView(TABS[state.tab](list));
+  wireView(list);
+  lazyLoad();
+}
+let lazyBusy = false;
+const attempted = { analytics: false, gaps: false };  // одна попытка на загрузку: если сервер не вернул блок, не крутим запросы по кругу
+async function lazyLoad() {
+  if (DEMO || lazyBusy) return;
+  const needA = ME.full_access && !loadedExtras.analytics && !attempted.analytics && (state.tab === "appr" || state.tab === "stat");
+  const needG = ME.tabs.includes("data") && !loadedExtras.gaps && !attempted.gaps && state.tab === "data";
+  if (!needA && !needG) return;
+  if (needA) attempted.analytics = true;
+  if (needG) attempted.gaps = true;
+  lazyBusy = true;
+  try { await fetchData({ analytics: needA || loadedExtras.analytics, gaps: needG || loadedExtras.gaps }); } finally { lazyBusy = false; }
+}
+function wireView(list) {
+  document.querySelectorAll("[data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id));
+  const sig = signals(list);
+  document.querySelectorAll("[data-sig]").forEach(b => b.onclick = () => { const s = sig[+b.dataset.sig]; if (s.items.length) openList(s.t, s.items); });
+  const act = list.filter(o => o.outcome === "active");
+  const lists = { all: ["Все офферы за период", list], act: ["В работе", act], wait: ["Ждут решения", act.filter(o => o.waiting.length)], line: ["Линейка", list.filter(o => o.path === "line")], signed: ["Подписано", list.filter(o => o.outcome === "signed")], failed: ["Не состоялись", list.filter(o => o.outcome === "failed")] };
+  document.querySelectorAll("[data-list]").forEach(b => b.onclick = () => openList(...lists[b.dataset.list]));
+}
+
+// ===================== окна =====================
+function openModal(html) { $("modal-body").innerHTML = html; $("modal-bg").classList.add("open"); $("modal").scrollTop = 0; $("close").focus(); }
+function closeModal() { $("modal-bg").classList.remove("open"); }
+function openList(title, items) {
+  openModal(`<h3>${esc(title)}</h3><div class="sub">${items.length} · нажмите на строку, чтобы открыть карточку</div><div class="list" style="margin-top:12px">${items.slice(0, 60).map(rowHTML).join("")}</div>`);
+  document.querySelectorAll("#modal-body [data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id));
+}
+function approveLink(o) {
+  if (DEMO || !["nachal", "sveta", "final"].includes(o.actionable)) return null;
+  return `https://t.me/${BOT_USERNAME}?start=approve_${o.tab === "Б" ? "b" : "a"}_${o.row}`;
+}
+function openOffer(id) {
+  const o = OFFERS.find(x => x.id === id); if (!o) return;
+  const tl = o.steps.map((s, i) => {
+    const st = o.outcome === "signed" ? (o.hasHr && !o.hr.complete && s === "Анкета для кадров" ? "cur" : "done")
+      : i < o.cur ? "done" : (i === o.cur && o.outcome === "active") ? "cur" : (o.outcome === "failed" && i === o.cur) ? "bad" : "pend";
+    const w = st === "cur" ? `${pluralDays(o.daysOnStage)} на этапе` : st === "bad" ? "остановлен" : (i === 0 ? `создан ${o.created ? pluralDays(o.created) + " назад" : "сегодня"}` : "");
+    return `<li class="${st}"><span></span><span class="s">${esc(s)}</span><span class="w">${w}</span></li>`;
+  }).join("");
+  const appr = approveLink(o), botHome = `https://t.me/${BOT_USERNAME}`;
+  const btn = (label, href, primary) => href ? `<a class="btn ${primary ? "primary" : ""}" href="${href}" target="_blank" rel="noopener">${label}</a>` : `<button class="btn ${primary ? "primary" : ""}" disabled title="В демо кнопка не работает">${label}</button>`;
+  const link = (label, href) => href && href !== "#" ? `<a class="pill gray" href="${esc(href)}" target="_blank" rel="noopener">${label}</a>` : `<span class="pill gray" style="opacity:.5">${label}</span>`;
+  openModal(`
+    <h3>${esc(o.candidate)}</h3>
+    <div class="chips"><span class="pill ${PATH[o.path].cls}">${PATH[o.path].label}</span><span class="pill ${statusCls[o.status]}">${o.status}</span>${o.review ? '<span class="pill red">На проверке у Светы</span>' : ""}</div>
+    <div class="kv"><span>Должность: <b>${esc(o.position)}</b></span><span>Бар: <b>${esc(o.bar)}</b></span><span>Подал: <b>${esc(o.recruiter || "—")}</b></span><span>СБ: <b>${esc(o.sb)}</b></span><span>Создан: <b>${o.created ? pluralDays(o.created) + " назад" : "сегодня"}</b></span></div>
+    ${o.waiting.length ? `<h2 style="margin-top:16px">Сейчас ждут</h2><div class="chips">${o.waiting.map(w => `<span class="pill ${w.done ? "green" : "yellow"}">${w.done ? "✓ согласовал" : "⏳ ждём"} · ${esc(w.who)}</span>`).join("")}</div>` : ""}
+    <h2 style="margin-top:16px">Этапы</h2><ol class="timeline">${tl}</ol>
+    ${o.hasHr && (o.outcome === "signed" || o.hr.done) ? `<h2>Анкета для кадров</h2><div class="prog" style="max-width:320px"><i style="width:${o.hr.total ? 100 * o.hr.done / o.hr.total : 0}%"></i></div><p class="note">${o.hr.done} из ${o.hr.total} пунктов${o.hr.complete ? "" : " · не хватает: " + esc(o.hr.missing.slice(0, 4).join(", "))}. Сами данные в дашборде не показываются.</p>` : ""}
+    <h2>Ссылки</h2><div class="chips">${link("📄 Документ оффера", o.doc_link)}${link("📊 Строка в таблице", o.sheet_link)}</div>
+    <div class="actions">
+      ${appr ? btn("Согласовать в боте", appr, true) : ""}
+      ${o.outcome === "active" ? btn("Открыть бота", DEMO ? null : botHome, !appr) : ""}
+      ${o.outcome === "signed" && o.hasHr && !o.hr.complete ? btn("Донести данные для кадров в боте", DEMO ? null : botHome, false) : ""}
+      ${DEMO ? '<span class="note" style="align-self:center">В демо кнопки не работают.</span>' : ""}
+    </div>`);
+}
+function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200); }
+
+// ===================== события и запуск =====================
+$("close").onclick = closeModal; $("modal-bg").onclick = e => { if (e.target === $("modal-bg")) closeModal(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render(); });
+for (const [id, key] of [["q", "q"], ["f-period", "period"], ["f-path", "path"], ["f-status", "status"], ["f-brand", "brand"], ["f-recruiter", "recruiter"]])
+  $(id).addEventListener(id === "q" ? "input" : "change", e => { state[key] = e.target.value; if (key === "period" && !DEMO && ME.full_access && loadedExtras.analytics) { loadedExtras.analytics = false; attempted.analytics = false; } render(); });
+$("f-done").onchange = e => { state.done = e.target.checked; render(); };
+$("reset").onclick = () => { Object.assign(state, { ...DEF, tab: state.tab }); syncControls(); render(); };
+$("share").onclick = async () => { try { await navigator.clipboard.writeText(location.href); toast("Ссылка на срез скопирована"); } catch { toast("Скопируйте адрес из строки браузера"); } };
+$("refresh").onclick = () => reload();
+$("logout").onclick = () => { safeSet("offers_token", null); location.href = location.pathname; };
+const storedTheme = () => { try { return localStorage.getItem("theme"); } catch { return null; } };
+function applyTheme(t) { if (t) document.documentElement.setAttribute("data-theme", t); }
+applyTheme(storedTheme());
+$("theme").onclick = () => { const dark = document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches); const t = dark ? "light" : "dark"; applyTheme(t); try { localStorage.setItem("theme", t); } catch {} };
+setInterval(() => { if (document.visibilityState === "visible" && !$("modal-bg").classList.contains("open") && $("app").hidden === false) reload(); }, 180000);
+
+(function start() {
+  // токен приходит в «хвосте» адреса (#token=…) после входа через Telegram — кладём в sessionStorage и убираем из адреса
+  const m = location.hash.match(/token=([^&]+)/);
+  if (m) { safeSet("offers_token", decodeURIComponent(m[1])); try { history.replaceState(null, "", location.pathname + location.search); } catch {} }
+  $("app").hidden = true;
+  if (DEMO) {
+    $("ribbon").hidden = false; $("ribbon").innerHTML = "<b>Демо.</b> Все данные вымышленные, кнопки «в бота» не работают. <a href=\"" + location.pathname + "\">Выйти из демо</a>";
+    $("logout").hidden = true;
+  }
+  $("view").innerHTML = '<div class="tiles">' + '<div class="skeleton" style="height:92px"></div>'.repeat(6) + '</div><div class="skeleton" style="height:240px;margin-top:20px"></div>';
+  $("app").hidden = false;
+  if (DEMO) setTimeout(reload, 350); else fetchData().then(() => { if (!safeGet("offers_token")) showLogin(); });
+})();
+</script>
+
+</body>
+</html>
