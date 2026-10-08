@@ -264,8 +264,8 @@ function buildDemo() {
   const OLD_POS = [["Сетевой бар-менеджер",1],["Маркетолог",1],["Сетевой бренд-шеф",1]];
   const RECR = ["Рекрут А", "Рекрут Б", "Рекрут В", "Менеджер бара (РВ ПЕРМЬ)"];
   const SL = ["Анкета подана","Документ создан","PDF и NDA отправлены","Скан оффера загружен","Анкета для кадров"];
-  const SA = ["Анкета подана","Руководители Заказчика","Сетевой согласователь + ТУ","Проверка Светы","Финальное согласование","Скан оффера загружен","Анкета для кадров"];
-  const SO = ["Анкета подана","Руководители Заказчика","Проверка Светы","Финальное согласование","Скан оффера загружен","Анкета для кадров"];
+  const SA = ["Анкета подана","Руководители Заказчика","Сетевой согласователь + ТУ","Проверка Светы","Финальное согласование","Подтверждение Светы","Скан оффера загружен","Анкета для кадров"];
+  const SO = ["Анкета подана","Руководители Заказчика","Проверка Светы","Финальное согласование","Подтверждение Светы","Скан оффера загружен","Анкета для кадров"];
   const out = [];
   for (let i = 0; i < 74; i++) {
     const path = wpick([["line", 66], ["appr", 24], ["old", 10]]);
@@ -285,7 +285,7 @@ function buildDemo() {
       const s = steps[cur] || "";
       if (path !== "line" && /Руководители|Сетевой|Света|Финальное/.test(s)) {
         o.waiting = s.startsWith("Сетевой") ? [{ who: "Сетевой бренд-шеф", done: rnd() < .4 }, { who: "ТУ " + brand, done: false }]
-          : s.includes("Света") ? [{ who: "Света (проверка)", done: false }] : s.startsWith("Финальное") ? [{ who: "Финальный согласователь", done: false }] : [{ who: "Руководитель Заказчика", done: false }];
+          : s.includes("Подтверждение") ? [{ who: "Света (подтверждает готовность к PDF)", done: false }] : s.includes("Света") ? [{ who: "Света (проверка)", done: false }] : s.startsWith("Финальное") ? [{ who: "Финальный согласователь", done: false }] : [{ who: "Руководитель Заказчика", done: false }];
       }
       if (path === "line" && cur === 2 && rnd() < .3) o.review = true;
     }
@@ -365,9 +365,9 @@ async function reload() {
 }
 
 // ===================== фильтры и состояние =====================
-const DEF = { tab: "main", q: "", period: "30", path: "", status: "", brand: "", recruiter: "", done: false };
+const DEF = { tab: "main", q: "", period: "30", path: "", status: "", brand: "", recruiter: "", done: false, chip: "" };
 const state = { ...DEF };
-const ALLOWED = { tab: ["main", "appr", "line", "data", "stat"], period: ["7", "30", "90", "3650"], path: ["", "line", "appr", "old"], status: ["", "В работе", "Ждёт решения", "Подписан", "Не состоялся"] };
+const ALLOWED = { tab: ["main", "appr", "line", "data", "stat"], period: ["7", "30", "90", "3650"], path: ["", "line", "appr", "old"], status: ["", "В работе", "Ждёт решения", "Подписан", "Не состоялся"], chip: ["", "wait", "review", "sb", "hr", "mine"] };
 for (const k of Object.keys(state)) if (qs.has(k)) { const v = k === "done" ? qs.get(k) === "1" : qs.get(k); if (!ALLOWED[k] || ALLOWED[k].includes(v)) state[k] = v; }
 function syncControls() { $("q").value = state.q; $("f-period").value = state.period; $("f-path").value = state.path; $("f-status").value = state.status; $("f-brand").value = state.brand; $("f-recruiter").value = state.recruiter; $("f-done").checked = state.done; }
 function syncURL() {
@@ -381,9 +381,18 @@ function filtered() {
   return OFFERS.filter(o => (o.outcome === "active" || o.created <= per) &&
     (!q || (o.candidate + " " + o.position + " " + o.bar).toLowerCase().includes(q)) &&
     (!state.path || o.path === state.path) && (!state.status || o.status === state.status) &&
-    (!state.brand || o.brand === state.brand) && (!state.recruiter || o.recruiter === state.recruiter));
+    (!state.brand || o.brand === state.brand) && (!state.recruiter || o.recruiter === state.recruiter) &&
+    (!state.chip || CHIPS[state.chip].test(o)));
 }
-function activeFiltersCount() { return ["q", "path", "status", "brand", "recruiter"].filter(k => state[k]).length + (state.period !== "30" ? 1 : 0) + (state.done ? 1 : 0); }
+// быстрые фильтры над списком кандидатов (для «что на мне / что у Светы / где застряло»)
+const CHIPS = {
+  wait: { label: "Ждут решения", test: o => o.outcome === "active" && o.waiting.length > 0 },
+  review: { label: "На проверке у Светы", test: o => o.review || (o.outcome === "active" && o.waiting.some(w => w.who.startsWith("Света"))) },
+  sb: { label: "СБ не начата", test: o => o.outcome === "active" && o.sb === "Не начата" },
+  hr: { label: "Ждут анкету кадров", test: o => o.outcome === "signed" && o.hasHr && !o.hr.complete },
+  mine: { label: "Ждёт меня", test: o => o.outcome === "active" && ["nachal", "sveta", "sveta_confirm", "final"].includes(o.actionable) },
+};
+function activeFiltersCount() { return ["q", "path", "status", "brand", "recruiter", "chip"].filter(k => state[k]).length + (state.period !== "30" ? 1 : 0) + (state.done ? 1 : 0); }
 
 // ===================== вкладки =====================
 const lateDays = o => o.daysOnStage >= (o.waiting.length ? 1 : 3);
@@ -439,6 +448,7 @@ function tab_main(list) {
   <h2>Воронка <small>красным — застряло или ждёт</small></h2>
   <div class="card funnel">${funnelRows.map(([l, n, late]) => `<div class="f-row"><div>${l}</div><div class="bar"><i style="width:${100 * n / max}%"></i><b style="width:${100 * late / max}%"></b></div><div class="c">${n}${late ? ` · застряло ${late}` : ""}</div></div>`).join("")}</div>
   <h2>Кандидаты <small>${cand.length} по текущим фильтрам${state.done ? "" : " · завершённые скрыты"}${cand.length > candLimit ? ` · показано ${candLimit}` : ""}</small></h2>
+  <div class="chips" role="group" aria-label="Быстрые фильтры" style="margin-bottom:10px">${Object.entries(CHIPS).map(([k, c]) => `<button class="btn ${state.chip === k ? "primary" : ""}" data-chip="${k}" aria-pressed="${state.chip === k}">${c.label}</button>`).join("")}</div>
   <div class="list" id="cand">${cand.length ? cand.slice().sort((a, b) => (b.outcome === "active") - (a.outcome === "active") || b.daysOnStage - a.daysOnStage).slice(0, candLimit).map(rowHTML).join("") : emptyBlock()}</div>
   ${cand.length > candLimit ? `<button class="btn more" id="more-cand">Показать ещё (осталось ${cand.length - candLimit})</button>` : ""}`;
 }
@@ -567,6 +577,7 @@ async function lazyLoad() {
   try { await fetchData({ analytics: needA || loadedExtras.analytics, gaps: needG || loadedExtras.gaps }); } finally { lazyBusy = false; }
 }
 function wireView(list) {
+  document.querySelectorAll("[data-chip]").forEach(b => b.onclick = () => { state.chip = state.chip === b.dataset.chip ? "" : b.dataset.chip; if (state.chip) state.done = true; candLimit = 40; syncControls(); render(); });
   const mc = $("more-cand"); if (mc) mc.onclick = () => { candLimit += 40; render(); };
   document.querySelectorAll("[data-more]").forEach(b => b.onclick = () => { const l = list.filter(o => o.path === "line" && o.outcome !== "failed").filter(laneFns[+b.dataset.more]); openList(b.dataset.title, l); });
   document.querySelectorAll("[data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id));
