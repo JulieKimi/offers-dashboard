@@ -13,13 +13,14 @@
     --bg-glow: radial-gradient(1200px 420px at 15% -10%, #fdeecb99, transparent 60%),
                radial-gradient(900px 380px at 100% 0%, #f6d9b855, transparent 55%);
     --surface: #ffffff; --surface-alt: #f3f1ea; --border: #e6e2d6;
-    --text: #211f19; --text-muted: #6f6a5c; --text-faint: #a49e8c;
+    --text: #211f19; --text-muted: #6f6a5c; --text-faint: #706a58;
     --accent: #b96a0c; --accent-strong: #8f5309; --accent-soft: #fbeed9;
     --success: #1e7b4d; --success-soft: #e6f4ec;
-    --warning: #a5700a; --warning-soft: #fbf0da;
+    --warning: #7d5507; --warning-soft: #fbf0da;
     --danger: #c1392b; --danger-soft: #fbeae7;
-    --purple: #6b63c9; --purple-soft: #eceafa;
-    --blue: #3f6fa8; --blue-soft: #e6eef8;
+    --purple: #5a52b8; --purple-soft: #eceafa;
+    --blue: #35609a; --blue-soft: #e6eef8;
+    --field-border: #8f8977; --accent-btn: #8f5309; --on-accent: #ffffff;
     --neutral-pill-bg: #edeae0; --neutral-pill-fg: #55503f;
     --shadow: 0 1px 2px rgba(33,31,25,.05), 0 12px 28px -14px rgba(33,31,25,.16);
     --shadow-lg: 0 4px 10px rgba(33,31,25,.06), 0 24px 48px -20px rgba(33,31,25,.22);
@@ -37,6 +38,7 @@
       --success: #6fce9e; --success-soft: #1c3227; --warning: #e3b158; --warning-soft: #3a2e13;
       --danger: #e8887c; --danger-soft: #3a2119; --purple: #afa9ec; --purple-soft: #2a2745;
       --blue: #8fb3e0; --blue-soft: #1c2a3a; --neutral-pill-bg: #2c2919; --neutral-pill-fg: #cdc6ac;
+      --field-border: #6f6a54; --accent-btn: #e2963c; --on-accent: #15140f;
       --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.55);
       --shadow-lg: 0 4px 10px rgba(0,0,0,.4), 0 24px 48px -20px rgba(0,0,0,.65);
     }
@@ -50,6 +52,7 @@
     --success: #6fce9e; --success-soft: #1c3227; --warning: #e3b158; --warning-soft: #3a2e13;
     --danger: #e8887c; --danger-soft: #3a2119; --purple: #afa9ec; --purple-soft: #2a2745;
     --blue: #8fb3e0; --blue-soft: #1c2a3a; --neutral-pill-bg: #2c2919; --neutral-pill-fg: #cdc6ac;
+      --field-border: #6f6a54; --accent-btn: #e2963c; --on-accent: #15140f;
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.55);
     --shadow-lg: 0 4px 10px rgba(0,0,0,.4), 0 24px 48px -20px rgba(0,0,0,.65);
   }
@@ -73,12 +76,12 @@
   button, select, input[type=search] { font-family: inherit; font-size: 14px; color: var(--text); }
   .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; cursor: pointer; box-shadow: var(--shadow); }
   .btn:hover { border-color: var(--accent); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .btn.primary { background: var(--accent-btn); border-color: var(--accent-btn); color: var(--on-accent); font-weight: 600; }
   .btn.ghost { box-shadow: none; background: transparent; }
   .btn[disabled] { opacity: .55; cursor: not-allowed; }
   .btn:focus-visible, select:focus-visible, input:focus-visible, .tile:focus-visible, .row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; box-shadow: var(--shadow); margin-bottom: 14px; }
-  .filters select, .filters input[type=search] { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; min-width: 0; }
+  .filters select, .filters input[type=search] { background: var(--surface-alt); border: 1px solid var(--field-border); border-radius: 9px; padding: 7px 10px; min-width: 0; }
   .filters input[type=search] { flex: 1 1 200px; }
   .filters label.chk { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); }
   .filters .spacer { flex: 1; }
@@ -96,7 +99,7 @@
   .tile .l { color: var(--text-muted); font-size: 13.5px; margin-top: 4px; }
   .tile .d { font-size: 12px; margin-top: 6px; color: var(--text-faint); }
   .tile.hot .n { color: var(--danger); } .tile.ok .n { color: var(--success); } .tile.acc .n { color: var(--accent-strong); } .tile.blue .n { color: var(--blue); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; }
+  .card { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; }
   .signals { display: grid; gap: 8px; }
   .signal { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; text-align: left; width: 100%; }
   .signal:hover { border-color: var(--accent); }
@@ -118,7 +121,7 @@
   .row:hover { border-color: var(--accent); }
   .row .nm { font-weight: 700; } .row .mut { color: var(--text-muted); font-size: 13px; }
   .row .days { text-align: right; font-size: 13px; color: var(--text-muted); } .row .days.late { color: var(--danger); font-weight: 700; }
-  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; align-items: start; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px; align-items: start; }
   .col { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
   .col h3 { font-family: var(--font-display); font-size: 14px; margin: 2px 4px 8px; display: flex; justify-content: space-between; }
   .mini { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; cursor: pointer; font-size: 13.5px; width: 100%; text-align: left; }
@@ -154,10 +157,16 @@
   .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: .25s; z-index: 80; } .toast.show { opacity: 1; }
   footer { margin-top: 34px; color: var(--text-faint); font-size: 12.5px; text-align: center; }
   @media (max-width: 720px) {
+    .btn, .filters select, .filters input[type=search], nav.tabs button, .mini, .signal, .row { min-height: 44px; }
+    .filters select, .filters input[type=search] { flex: 1 1 140px; }
     h1 { font-size: 22px; } .row { grid-template-columns: 1fr 1fr; } .row .days { text-align: left; }
     .f-row { grid-template-columns: 110px 1fr 70px; font-size: 13px; }
   }
   [hidden] { display: none !important; }
+  .banner { background: var(--warning-soft); color: var(--warning); border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent); border-radius: 12px; padding: 8px 14px; font-size: 13.5px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .more { display: block; width: 100%; margin-top: 8px; text-align: center; }
+  .back { margin-bottom: 8px; }
+  .todo { border-color: var(--accent); }
   .login { max-width: 520px; margin: 48px auto; text-align: center; padding: 28px 24px; }
   .login .btn.primary { display: inline-block; text-decoration: none; padding: 11px 20px; font-size: 15px; }
   a.btn { text-decoration: none; display: inline-block; }
@@ -167,6 +176,7 @@
 <body>
 <div class="wrap">
   <div class="ribbon" role="note" id="ribbon" hidden></div>
+  <div class="banner" id="banner" role="status" hidden></div>
   <header class="top">
     <div>
       <h1>Офферы — статус кандидатов</h1>
@@ -182,6 +192,7 @@
 
   <div id="login" class="card login" hidden>
     <h2 style="margin-top:0">Вход в дашборд офферов</h2>
+    <p class="note" id="login-note" role="status" style="color:var(--danger)"></p>
     <p class="note">Вход через Telegram. Вы увидите офферы, в которых участвуете (подали, согласуете, ТУ вашего бара). Руководители видят всё.</p>
     <a class="btn primary" id="login-link" href="#">Войти через Telegram</a>
     <p class="note" style="margin-top:14px">Хотите сначала посмотреть, как это выглядит? <a href="?demo=1">Демо на вымышленных данных</a>.</p>
@@ -202,19 +213,19 @@
       <button class="btn" id="reset">Сбросить фильтры</button>
     </section>
 
-    <nav class="tabs" role="tablist" id="tabs">
-      <button role="tab" data-tab="main" aria-selected="true">Основное</button>
-      <button role="tab" data-tab="appr" aria-selected="false">Согласования</button>
-      <button role="tab" data-tab="line" aria-selected="false">Линейка и кадры</button>
-      <button role="tab" data-tab="data" aria-selected="false">Данные и шаблоны <span class="cnt" id="gaps-cnt"></span></button>
-      <button role="tab" data-tab="stat" aria-selected="false">Метрики</button>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="Разделы">
+      <button role="tab" id="tab-main" aria-controls="view" data-tab="main" aria-selected="true">Основное</button>
+      <button role="tab" id="tab-appr" aria-controls="view" data-tab="appr" aria-selected="false">Согласования</button>
+      <button role="tab" id="tab-line" aria-controls="view" data-tab="line" aria-selected="false">Линейка и кадры</button>
+      <button role="tab" id="tab-data" aria-controls="view" data-tab="data" aria-selected="false">Данные и шаблоны <span class="cnt" id="gaps-cnt"></span></button>
+      <button role="tab" id="tab-stat" aria-controls="view" data-tab="stat" aria-selected="false">Метрики</button>
     </nav>
-    <main id="view"></main>
+    <main id="view" role="tabpanel" tabindex="-1"></main>
   </div>
   <footer>Дашборд офферов · персональные данные кандидатов не показываются</footer>
 </div>
-<div class="modal-bg" id="modal-bg"><div class="modal" role="dialog" aria-modal="true" id="modal"><button class="close" id="close" aria-label="Закрыть">×</button><div id="modal-body"></div></div></div>
-<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal"><button class="close" id="close" aria-label="Закрыть">×</button><div id="modal-body"></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ===================== настройки =====================
@@ -303,6 +314,8 @@ function buildDemo() {
 
 // ===================== загрузка =====================
 let loadedExtras = { analytics: false, gaps: false };
+let LOADED = false;
+function banner(msg) { const b = $("banner"); b.hidden = !msg; b.textContent = msg || ""; }
 async function fetchData(extra = {}) {
   const token = safeGet("offers_token");
   if (!token) return showLogin();
@@ -310,25 +323,30 @@ async function fetchData(extra = {}) {
   if (extra.analytics) p.set("analytics", "1");
   if (extra.gaps) p.set("gaps", "1");
   p.set("period", ({ "7": "7d", "30": "30d", "90": "90d" })[state.period] || "all");
+  // при сбое: если данные уже были — оставляем их на экране и пишем плашку; если нет — карточка ошибки
+  const fail = msg => { $("updated").textContent = UPDATED ? "Данные от " + fmtTime(UPDATED) + " (не обновились)" : ""; if (LOADED) banner(msg + " Показываю то, что загружено раньше."); else showError(msg); };
   let res;
   try { res = await fetch(`${API_BASE}/api/v2/dashboard?${p}`, { headers: { Authorization: "Bearer " + token } }); }
-  catch { return showError("Не получилось связаться с сервером дашборда. Проверьте интернет и нажмите «Обновить»."); }
-  if (res.status === 401) { safeSet("offers_token", null); return showLogin(); }
-  if (!res.ok) return showError("Сервер сейчас не может собрать данные (код " + res.status + "). Попробуйте через минуту.");
-  const d = await res.json();
-  OFFERS = d.offers.map(norm); ME = d.me; UPDATED = d.updated_at;
+  catch { return fail("Не получилось связаться с сервером дашборда. Проверь интернет."); }
+  if (res.status === 401) { safeSet("offers_token", null); LOADED = false; return showLogin("Сессия истекла — войди ещё раз."); }
+  if (!res.ok) return fail("Сервер сейчас не может собрать данные (код " + res.status + ").");
+  let d;
+  try { d = await res.json(); } catch { return fail("Сервер ответил не так, как ожидалось."); }
+  banner("");
+  OFFERS = d.offers.map(norm); ME = d.me; UPDATED = d.updated_at; LOADED = true;
   if (d.analytics) { ANALYTICS = d.analytics; loadedExtras.analytics = true; }
   if (d.gaps) { GAPS = d.gaps; loadedExtras.gaps = true; }
   showApp();
 }
+function fmtTime(iso) { const t = new Date(iso); return isNaN(t) ? "" : t.toLocaleString("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); }
 function setView(html) { $("view").innerHTML = html; }
-function showLogin() { $("app").hidden = true; $("login").hidden = false; $("who").textContent = ""; $("updated").textContent = ""; $("login-link").href = API_BASE + "/auth/pages-login"; $("logout").hidden = true; $("refresh").hidden = true; }
-function showError(msg) { $("login").hidden = true; $("app").hidden = false; setView(`<div class="card err"><b>Не получилось загрузить данные</b><p class="note">${esc(msg)}</p><button class="btn primary" onclick="reload()">Попробовать снова</button></div>`); }
+function showLogin(note) { $("app").hidden = true; $("login").hidden = false; $("login-note").textContent = note || ""; $("who").textContent = ""; $("updated").textContent = ""; $("login-link").href = API_BASE + "/auth/pages-login"; $("logout").hidden = true; $("refresh").hidden = true; }
+function showError(msg) { $("updated").textContent = ""; $("login").hidden = true; $("app").hidden = false; setView(`<div class="card err"><b>Не получилось загрузить данные</b><p class="note">${esc(msg)}</p><button class="btn primary" onclick="reload()">Попробовать снова</button></div>`); }
 function showApp() {
   $("login").hidden = true; $("app").hidden = false;
   const who = DEMO ? "Демо-режим · вымышленные данные" : `@${ME.username} · ${ME.full_access ? "видите все офферы" : ME.is_tu ? "свои офферы и офферы ваших баров (ТУ)" : "только офферы, где вы участвуете"}`;
   $("who").textContent = who;
-  if (UPDATED) { const t = new Date(UPDATED); $("updated").textContent = "Обновлено: " + t.toLocaleString("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); }
+  if (UPDATED) { const mins = Math.max(0, Math.round((Date.now() - new Date(UPDATED)) / 60000)); $("updated").textContent = "Обновлено: " + fmtTime(UPDATED) + (mins >= 1 ? ` (${mins} мин назад)` : ""); }
   fillSelects(); applyTabs(); syncControls(); render();
 }
 function applyTabs() {
@@ -349,7 +367,8 @@ async function reload() {
 // ===================== фильтры и состояние =====================
 const DEF = { tab: "main", q: "", period: "30", path: "", status: "", brand: "", recruiter: "", done: false };
 const state = { ...DEF };
-for (const k of Object.keys(state)) if (qs.has(k)) state[k] = k === "done" ? qs.get(k) === "1" : qs.get(k);
+const ALLOWED = { tab: ["main", "appr", "line", "data", "stat"], period: ["7", "30", "90", "3650"], path: ["", "line", "appr", "old"], status: ["", "В работе", "Ждёт решения", "Подписан", "Не состоялся"] };
+for (const k of Object.keys(state)) if (qs.has(k)) { const v = k === "done" ? qs.get(k) === "1" : qs.get(k); if (!ALLOWED[k] || ALLOWED[k].includes(v)) state[k] = v; }
 function syncControls() { $("q").value = state.q; $("f-period").value = state.period; $("f-path").value = state.path; $("f-status").value = state.status; $("f-brand").value = state.brand; $("f-recruiter").value = state.recruiter; $("f-done").checked = state.done; }
 function syncURL() {
   const p = new URLSearchParams();
@@ -359,7 +378,7 @@ function syncURL() {
 }
 function filtered() {
   const q = state.q.trim().toLowerCase(), per = +state.period;
-  return OFFERS.filter(o => o.created <= per &&
+  return OFFERS.filter(o => (o.outcome === "active" || o.created <= per) &&
     (!q || (o.candidate + " " + o.position + " " + o.bar).toLowerCase().includes(q)) &&
     (!state.path || o.path === state.path) && (!state.status || o.status === state.status) &&
     (!state.brand || o.brand === state.brand) && (!state.recruiter || o.recruiter === state.recruiter));
@@ -395,7 +414,8 @@ function rowHTML(o) {
 }
 const tile = (n, l, d, cls, fn) => `<button class="tile ${cls} fade-in" data-list="${fn}"><div class="n">${n}</div><div class="l">${l}</div><div class="d">${d}</div></button>`;
 function tab_main(list) {
-  const act = list.filter(o => o.outcome === "active"), sig = signals(list), cand = list.filter(o => state.done || o.outcome === "active");
+  const act = list.filter(o => o.outcome === "active"), sig = signals(OFFERS), cand = list.filter(o => state.done || o.outcome === "active");
+  const mine = OFFERS.filter(o => o.outcome === "active" && o.actionable && ["nachal", "sveta", "final"].includes(o.actionable));
   const approvedDone = o => o.outcome === "signed" || o.path === "line" || ["Скан оффера загружен", "Анкета для кадров"].includes(stepName(o));
   const funnelRows = [
     ["Подано", list.length, act.filter(o => o.waiting.length && o.daysOnStage >= 2).length],
@@ -413,13 +433,16 @@ function tab_main(list) {
     ${tile(list.filter(o => o.outcome === "signed").length, "Подписано", "оффер подписан", "ok", "signed")}
     ${tile(list.filter(o => o.outcome === "failed").length, "Не состоялись", "отказ, торги, отклонён", "", "failed")}
   </div>
-  <h2>Требует внимания сегодня</h2>
-  <div class="signals">${sig.map((s, i) => `<button class="signal ${s.items.length ? s.cls : "zero"} fade-in" data-sig="${i}"><span class="badge">${s.items.length}</span><span><div class="t">${s.t}</div><div class="r">${s.r}</div></span><span class="go">${s.items.length ? "Показать →" : "всё в порядке"}</span></button>`).join("")}</div>
+  ${mine.length ? `<h2>Ждёт твоего решения <small>${mine.length}</small></h2><div class="list">${mine.map(rowHTML).join("")}</div>` : ""}
+  <h2>Требует внимания сегодня <small>по всем офферам, фильтры не влияют</small></h2>
+  <div class="signals">${sig.map((s, i) => `<button class="signal ${s.items.length ? s.cls : "zero"} fade-in" data-sig="${i}"><span class="badge">${s.items.length}</span><span><div class="t">${s.t}</div><div class="r">${s.r}</div></span><span class="go">${s.items.length ? "Показать →" : OFFERS.length ? "всё в порядке" : "нет данных"}</span></button>`).join("")}</div>
   <h2>Воронка <small>красным — застряло или ждёт</small></h2>
   <div class="card funnel">${funnelRows.map(([l, n, late]) => `<div class="f-row"><div>${l}</div><div class="bar"><i style="width:${100 * n / max}%"></i><b style="width:${100 * late / max}%"></b></div><div class="c">${n}${late ? ` · застряло ${late}` : ""}</div></div>`).join("")}</div>
-  <h2>Кандидаты <small>${cand.length} по текущим фильтрам${state.done ? "" : " · завершённые скрыты"}</small></h2>
-  <div class="list" id="cand">${cand.length ? cand.slice().sort((a, b) => (b.outcome === "active") - (a.outcome === "active") || b.daysOnStage - a.daysOnStage).slice(0, 40).map(rowHTML).join("") : emptyBlock()}</div>`;
+  <h2>Кандидаты <small>${cand.length} по текущим фильтрам${state.done ? "" : " · завершённые скрыты"}${cand.length > candLimit ? ` · показано ${candLimit}` : ""}</small></h2>
+  <div class="list" id="cand">${cand.length ? cand.slice().sort((a, b) => (b.outcome === "active") - (a.outcome === "active") || b.daysOnStage - a.daysOnStage).slice(0, candLimit).map(rowHTML).join("") : emptyBlock()}</div>
+  ${cand.length > candLimit ? `<button class="btn more" id="more-cand">Показать ещё (осталось ${cand.length - candLimit})</button>` : ""}`;
 }
+let candLimit = 40;
 function emptyBlock() {
   return OFFERS.length ? '<div class="empty">Ничего не найдено — попробуйте изменить фильтры.</div>'
     : '<div class="empty">Пока нет ни одного оффера, в котором вы участвуете. Когда подадите или согласуете оффер через бота — он появится здесь. Посмотреть, как это выглядит: <a href="?demo=1">демо</a>.</div>';
@@ -453,23 +476,25 @@ function tab_appr(list) {
   </div>
   <h2>Кто чаще задерживает <small>за период</small></h2>${approverHtml}`;
 }
+const laneDefs = [
+  ["Документ создаётся", o => o.outcome === "active" && !o.review && o.cur <= 1],
+  ["На проверке у Светы", o => o.review],
+  ["Документ у владельца: PDF и скан", o => o.outcome === "active" && !o.review && o.cur >= 2],
+  ["Подписано, ждём анкету кадров", o => o.outcome === "signed" && o.hasHr && !o.hr.complete],
+  ["Готово", o => o.outcome === "signed" && !(o.hasHr && !o.hr.complete)],
+];
+const laneFns = laneDefs.map(l => l[1]);
 function tab_line(list) {
   const l = list.filter(o => o.path === "line" && o.outcome !== "failed");
-  const lanes = [
-    ["Документ создаётся", o => o.outcome === "active" && !o.review && o.cur <= 1],
-    ["На проверке у Светы", o => o.review],
-    ["Документ у владельца: PDF и скан", o => o.outcome === "active" && !o.review && o.cur >= 2],
-    ["Подписано, ждём анкету кадров", o => o.outcome === "signed" && o.hasHr && !o.hr.complete],
-    ["Готово", o => o.outcome === "signed" && !(o.hasHr && !o.hr.complete)],
-  ];
+  const lanes = laneDefs;
   const hr = list.filter(o => o.outcome === "signed" && o.hasHr).sort((a, b) => a.hr.done - b.hr.done).slice(0, 15);
   return `
   <h2>Лента линейки <small>${l.length} офферов без согласования</small></h2>
-  <div class="cols">${lanes.map(([t, f]) => { const os = l.filter(f); return `<div class="col"><h3>${t}<span class="pill gray">${os.length}</span></h3>${os.slice(0, 5).map(o => `<button class="mini" data-id="${esc(o.id)}"><b>${esc(o.candidate)}</b><div class="mut">${esc(o.position)} · ${esc(o.bar)}</div></button>`).join("") || '<div class="note" style="padding:4px">пусто</div>'}${os.length > 5 ? `<div class="note" style="padding:2px 4px">…и ещё ${os.length - 5}</div>` : ""}</div>`; }).join("")}</div>
+  <div class="cols">${lanes.map(([t, f]) => { const os = l.filter(f); return `<div class="col"><h3>${t}<span class="pill gray">${os.length}</span></h3>${os.slice(0, 5).map(o => `<button class="mini" data-id="${esc(o.id)}"><b>${esc(o.candidate)}</b><div class="mut">${esc(o.position)} · ${esc(o.bar)}</div></button>`).join("") || '<div class="note" style="padding:4px">пусто</div>'}${os.length > 5 ? `<button class="btn ghost" style="width:100%" data-more="${lanes.indexOf(lanes.find(x => x[0] === t))}" data-title="${esc(t)}">…и ещё ${os.length - 5} — показать все</button>` : ""}</div>`; }).join("")}</div>
   <h2>Анкета для кадров <small>прогресс, без личных данных</small></h2>
   <div class="card"><table class="t"><thead><tr><th>Кандидат</th><th>Должность · бар</th><th>Заполнено</th><th>Не хватает</th></tr></thead><tbody>
     ${hr.map(o => `<tr><td><button class="btn ghost" style="padding:0;border:none;font-weight:700;cursor:pointer" data-id="${esc(o.id)}">${esc(o.candidate)}</button></td><td>${esc(o.position)} · ${esc(o.bar)}</td><td><div class="prog"><i style="width:${o.hr.total ? 100 * o.hr.done / o.hr.total : 0}%"></i></div> ${o.hr.done}/${o.hr.total}</td><td>${o.hr.complete ? '<span class="pill green">всё</span>' : o.hr.missing.slice(0, 3).map(m => `<span class="pill yellow">${esc(m)}</span>`).join(" ")}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">Нет подписанных офферов с анкетой для кадров за период.</td></tr>'}</tbody></table>
-    <p class="note" style="margin:8px 0 0">Бот напоминает о недостающем каждые несколько часов. Дата рождения, адрес, ИНН и СНИЛС здесь не показываются.</p></div>`;
+    <p class="note" style="margin:8px 0 0">${hr.length >= 15 ? "Показаны 15 с наименьшей заполненностью. " : ""}Бот напоминает о недостающем каждые несколько часов. Дата рождения, адрес, ИНН и СНИЛС здесь не показываются.</p></div>`;
 }
 function gapCard(title, g, hint) {
   if (g === null || g === undefined) return `<div class="card"><b>${title}</b><div class="note">Не удалось прочитать данные — попробуйте обновить.</div></div>`;
@@ -519,6 +544,7 @@ function tab_stat(list) {
 const TABS = { main: tab_main, appr: tab_appr, line: tab_line, data: tab_data, stat: tab_stat };
 
 function render() {
+  if (!LOADED && !DEMO) return;
   syncURL();
   const list = filtered(), n = activeFiltersCount();
   $("ind").hidden = !n; $("ind").textContent = n ? `Фильтров включено: ${n}` : "";
@@ -541,8 +567,10 @@ async function lazyLoad() {
   try { await fetchData({ analytics: needA || loadedExtras.analytics, gaps: needG || loadedExtras.gaps }); } finally { lazyBusy = false; }
 }
 function wireView(list) {
+  const mc = $("more-cand"); if (mc) mc.onclick = () => { candLimit += 40; render(); };
+  document.querySelectorAll("[data-more]").forEach(b => b.onclick = () => { const l = list.filter(o => o.path === "line" && o.outcome !== "failed").filter(laneFns[+b.dataset.more]); openList(b.dataset.title, l); });
   document.querySelectorAll("[data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id));
-  const sig = signals(list);
+  const sig = signals(OFFERS);
   document.querySelectorAll("[data-sig]").forEach(b => b.onclick = () => { const s = sig[+b.dataset.sig]; if (s.items.length) openList(s.t, s.items); });
   const act = list.filter(o => o.outcome === "active");
   const lists = { all: ["Все офферы за период", list], act: ["В работе", act], wait: ["Ждут решения", act.filter(o => o.waiting.length)], line: ["Линейка", list.filter(o => o.path === "line")], signed: ["Подписано", list.filter(o => o.outcome === "signed")], failed: ["Не состоялись", list.filter(o => o.outcome === "failed")] };
@@ -550,18 +578,38 @@ function wireView(list) {
 }
 
 // ===================== окна =====================
-function openModal(html) { $("modal-body").innerHTML = html; $("modal-bg").classList.add("open"); $("modal").scrollTop = 0; $("close").focus(); }
-function closeModal() { $("modal-bg").classList.remove("open"); }
+let lastList = null, returnFocus = null;
+function openModal(html) {
+  if (!$("modal-bg").classList.contains("open")) returnFocus = document.activeElement;
+  $("modal-body").innerHTML = html; $("modal-bg").classList.add("open"); $("modal").scrollTop = 0;
+  $("app").inert = true; $("close").focus();
+}
+function closeModal() {
+  $("modal-bg").classList.remove("open"); $("app").inert = false; lastList = null;
+  if (returnFocus && document.contains(returnFocus)) returnFocus.focus(); else $("view").focus();
+}
+// фокус не уходит из окна, пока оно открыто
+document.addEventListener("keydown", e => {
+  if (e.key !== "Tab" || !$("modal-bg").classList.contains("open")) return;
+  const f = [...$("modal").querySelectorAll("button, a[href], input, select, [tabindex]:not([tabindex='-1'])")].filter(x => !x.disabled && x.offsetParent !== null);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
 function openList(title, items) {
-  openModal(`<h3>${esc(title)}</h3><div class="sub">${items.length} · нажмите на строку, чтобы открыть карточку</div><div class="list" style="margin-top:12px">${items.slice(0, 60).map(rowHTML).join("")}</div>`);
-  document.querySelectorAll("#modal-body [data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id));
+  lastList = { title, items };
+  openModal(`<h3 id="modal-title">${esc(title)}</h3><div class="sub">${items.length}${items.length > 200 ? " · показаны первые 200" : ""} · нажми на строку, чтобы открыть карточку</div><div class="list" style="margin-top:12px">${items.slice(0, 200).map(rowHTML).join("")}</div>`);
+  document.querySelectorAll("#modal-body [data-id]").forEach(b => b.onclick = () => openOffer(b.dataset.id, true));
 }
 function approveLink(o) {
   if (DEMO || !["nachal", "sveta", "final"].includes(o.actionable)) return null;
   return `https://t.me/${BOT_USERNAME}?start=approve_${o.tab === "Б" ? "b" : "a"}_${o.row}`;
 }
-function openOffer(id) {
+function openOffer(id, fromList) {
   const o = OFFERS.find(x => x.id === id); if (!o) return;
+  const back = fromList && lastList ? `<button class="btn ghost back" id="back-list">← К списку: ${esc(lastList.title)}</button>` : "";
+  const listBack = lastList;
   const tl = o.steps.map((s, i) => {
     const st = o.outcome === "signed" ? (o.hasHr && !o.hr.complete && s === "Анкета для кадров" ? "cur" : "done")
       : i < o.cur ? "done" : (i === o.cur && o.outcome === "active") ? "cur" : (o.outcome === "failed" && i === o.cur) ? "bad" : "pend";
@@ -571,8 +619,8 @@ function openOffer(id) {
   const appr = approveLink(o), botHome = `https://t.me/${BOT_USERNAME}`;
   const btn = (label, href, primary) => href ? `<a class="btn ${primary ? "primary" : ""}" href="${href}" target="_blank" rel="noopener">${label}</a>` : `<button class="btn ${primary ? "primary" : ""}" disabled title="В демо кнопка не работает">${label}</button>`;
   const link = (label, href) => href && href !== "#" ? `<a class="pill gray" href="${esc(href)}" target="_blank" rel="noopener">${label}</a>` : `<span class="pill gray" style="opacity:.5">${label}</span>`;
-  openModal(`
-    <h3>${esc(o.candidate)}</h3>
+  openModal(`${back}
+    <h3 id="modal-title">${esc(o.candidate)}</h3>
     <div class="chips"><span class="pill ${PATH[o.path].cls}">${PATH[o.path].label}</span><span class="pill ${statusCls[o.status]}">${o.status}</span>${o.review ? '<span class="pill red">На проверке у Светы</span>' : ""}</div>
     <div class="kv"><span>Должность: <b>${esc(o.position)}</b></span><span>Бар: <b>${esc(o.bar)}</b></span><span>Подал: <b>${esc(o.recruiter || "—")}</b></span><span>СБ: <b>${esc(o.sb)}</b></span><span>Создан: <b>${o.created ? pluralDays(o.created) + " назад" : "сегодня"}</b></span></div>
     ${o.waiting.length ? `<h2 style="margin-top:16px">Сейчас ждут</h2><div class="chips">${o.waiting.map(w => `<span class="pill ${w.done ? "green" : "yellow"}">${w.done ? "✓ согласовал" : "⏳ ждём"} · ${esc(w.who)}</span>`).join("")}</div>` : ""}
@@ -585,6 +633,7 @@ function openOffer(id) {
       ${o.outcome === "signed" && o.hasHr && !o.hr.complete ? btn("Донести данные для кадров в боте", DEMO ? null : botHome, false) : ""}
       ${DEMO ? '<span class="note" style="align-self:center">В демо кнопки не работают.</span>' : ""}
     </div>`);
+  const bb = $("back-list"); if (bb) bb.onclick = () => openList(listBack.title, listBack.items);
 }
 function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200); }
 
@@ -592,6 +641,11 @@ function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add(
 $("close").onclick = closeModal; $("modal-bg").onclick = e => { if (e.target === $("modal-bg")) closeModal(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render(); });
+$("tabs").addEventListener("keydown", e => {
+  if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+  const vis = [...document.querySelectorAll("#tabs button")].filter(b => !b.hidden), i = vis.findIndex(b => b.dataset.tab === state.tab);
+  const n = vis[(i + (e.key === "ArrowRight" ? 1 : -1) + vis.length) % vis.length]; state.tab = n.dataset.tab; render(); n.focus();
+});
 for (const [id, key] of [["q", "q"], ["f-period", "period"], ["f-path", "path"], ["f-status", "status"], ["f-brand", "brand"], ["f-recruiter", "recruiter"]])
   $(id).addEventListener(id === "q" ? "input" : "change", e => { state[key] = e.target.value; if (key === "period" && !DEMO && ME.full_access && loadedExtras.analytics) { loadedExtras.analytics = false; attempted.analytics = false; } render(); });
 $("f-done").onchange = e => { state.done = e.target.checked; render(); };
