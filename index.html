@@ -236,6 +236,7 @@ const DEMO = qs.get("demo") === "1";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const PATH = { line: { label: "Линейка", cls: "blue" }, appr: { label: "С согласованием", cls: "amber" }, old: { label: "Старый путь (УК)", cls: "purple" } };
+const PATH_HINT = { line: "Типовая должность бара: без согласования", appr: "Руководители → сетевой + ТУ → Света → финальный → Света подтверждает → PDF", old: "Должность УК: прежняя схема без шаблонов по бару" };
 const statusCls = { "В работе": "blue", "Ждёт решения": "yellow", "Подписан": "green", "Не состоялся": "red" };
 const pluralDays = n => n === 0 ? "сегодня" : n % 10 === 1 && n % 100 !== 11 ? `${n} день` : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? `${n} дня` : `${n} дней`;
 const safeGet = k => { try { return sessionStorage.getItem(k); } catch { return null; } };
@@ -246,7 +247,7 @@ let OFFERS = [], ME = { username: "", full_access: false, is_tu: false, tabs: ["
 
 // Серверный оффер -> форма, с которой работают вкладки ниже
 function norm(o) {
-  return { ...o, created: o.created_days, daysOnStage: o.days_on_stage, failReason: o.fail_reason, main_row_num: o.row,
+  return { ...o, created: o.created_days, daysOnStage: o.days_on_stage, signedDays: o.signed_days, failReason: o.fail_reason, main_row_num: o.row,
     hasHr: !!o.hr, hr: o.hr || { total: 0, done: 0, missing: [], complete: false } };
 }
 
@@ -294,6 +295,7 @@ function buildDemo() {
     const miss = ["Дети", "СНИЛС (скан)", "Договор о мат. ответственности (скан)", "ИНН (скан)", "Дата рождения", "Адрес постоянного проживания"];
     o.hr = outcome === "failed" ? null : { total: 10, done: hrDone, missing: miss.slice(0, 10 - hrDone > 6 ? 6 : 10 - hrDone), complete: hrDone === 10 };
     o.sb = path === "line" ? "Не требуется" : outcome === "signed" ? "Пройдена" : pick(["В процессе", "Пройдена", "Не начата"]);
+    if (outcome === "signed") o.signed_days = Math.round((path === "line" ? 0.6 + rnd() * 2.4 : 2.5 + rnd() * 5) * 10) / 10;
     out.push(o);
   }
   // несколько «показательных» случаев, чтобы сигналы не были пустыми
@@ -416,7 +418,7 @@ function rowHTML(o) {
   const late = o.outcome === "active" && lateDays(o);
   return `<button class="row fade-in" data-id="${esc(o.id)}">
     <div><div class="nm">${esc(o.candidate)}</div><div class="mut">${esc(o.position)} · ${esc(o.bar)}</div></div>
-    <div><span class="pill ${PATH[o.path].cls}">${PATH[o.path].label}</span></div>
+    <div><span class="pill ${PATH[o.path].cls}" title="${esc(PATH_HINT[o.path])}">${PATH[o.path].label}</span></div>
     <div><span class="pill ${statusCls[o.status]}">${o.status}</span></div>
     <div class="mut">${esc(stageText(o))}${o.waiting.length ? " · " + o.waiting.map(w => esc(w.who) + (w.done ? " ✓" : "")).join(", ") : ""}</div>
     <div class="days ${late ? "late" : ""}">${o.outcome === "active" ? pluralDays(o.daysOnStage) : "—"}</div></button>`;
@@ -450,7 +452,16 @@ function tab_main(list) {
   <h2>Кандидаты <small>${cand.length} по текущим фильтрам${state.done ? "" : " · завершённые скрыты"}${cand.length > candLimit ? ` · показано ${candLimit}` : ""}</small></h2>
   <div class="chips" role="group" aria-label="Быстрые фильтры" style="margin-bottom:10px">${Object.entries(CHIPS).map(([k, c]) => `<button class="btn ${state.chip === k ? "primary" : ""}" data-chip="${k}" aria-pressed="${state.chip === k}">${c.label}</button>`).join("")}</div>
   <div class="list" id="cand">${cand.length ? cand.slice().sort((a, b) => (b.outcome === "active") - (a.outcome === "active") || b.daysOnStage - a.daysOnStage).slice(0, candLimit).map(rowHTML).join("") : emptyBlock()}</div>
-  ${cand.length > candLimit ? `<button class="btn more" id="more-cand">Показать ещё (осталось ${cand.length - candLimit})</button>` : ""}`;
+  ${cand.length > candLimit ? `<button class="btn more" id="more-cand">Показать ещё (осталось ${cand.length - candLimit})</button>` : ""}
+  <details class="card legend" style="margin-top:18px"><summary><b>Как читать эти слова</b></summary>
+    <ul class="note" style="margin:8px 0 0;padding-left:18px;display:grid;gap:4px">
+      <li><b>Линейка</b> — оффер на типовую должность бара (хостес, официант, бармен и т.п.): согласования нет, Света подключается, только если оффер некорректен.</li>
+      <li><b>С согласованием</b> — Шеф-повар, Бар-менеджер, Арт-директор, Управляющий и т.п.: руководители → сетевой согласователь и ТУ → Света → финальный согласователь → Света подтверждает → PDF.</li>
+      <li><b>Старый путь (УК)</b> — должности управляющей компании, идут по прежней схеме без шаблонов по бару.</li>
+      <li><b>ТУ</b> — территориальный управляющий бара. <b>СБ</b> — служба безопасности (проверка кандидата).</li>
+      <li><b>Застряло / ждёт дольше суток</b> — решение не принято больше 24 часов с момента, когда очередь дошла до человека.</li>
+      <li><b>Приблизительно</b> у времени до подписи — точной даты подписания в таблицах нет, считаем до последнего изменения оффера.</li>
+    </ul></details>`;
 }
 let candLimit = 40;
 function emptyBlock() {
@@ -529,6 +540,9 @@ function tab_stat(list) {
   const signed = list.filter(o => o.outcome === "signed"), failed = list.filter(o => o.outcome === "failed");
   const withHr = signed.filter(o => o.hasHr), hrFull = withHr.filter(o => o.hr.complete);
   const pct = (a, b) => b ? Math.round(100 * a / b) + "%" : "—";
+  const days = a => a.filter(o => o.signedDays != null).map(o => o.signedDays).sort((x, y) => x - y);
+  const med = a => { const d = days(a); if (!d.length) return "—"; const m = d.length % 2 ? d[(d.length - 1) / 2] : (d[d.length / 2 - 1] + d[d.length / 2]) / 2; return String(m).replace(".", ",") + " дн."; };
+  const signedLine = signed.filter(o => o.path === "line"), signedAppr = signed.filter(o => o.path !== "line");
   const monthKey = o => { const d = new Date(Date.now() - o.created * 86400000); return d.getFullYear() * 12 + d.getMonth(); };
   const months = {};
   for (const o of list) { const k = monthKey(o); (months[k] = months[k] || { n: 0, s: 0 }).n++; if (o.outcome === "signed") months[k].s++; }
@@ -541,6 +555,8 @@ function tab_stat(list) {
   <div class="tiles">
     <div class="tile"><div class="n">${list.length}</div><div class="l">Подано офферов</div><div class="d">за выбранный период</div></div>
     <div class="tile ok"><div class="n">${pct(signed.length, list.length)}</div><div class="l">Дошли до подписи</div><div class="d">${signed.length} из ${list.length}</div></div>
+    <div class="tile blue"><div class="n">${med(signedLine)}</div><div class="l">Линейка: от подачи до подписи</div><div class="d">медиана, ${signedLine.length} подписанных · приблизительно</div></div>
+    <div class="tile acc"><div class="n">${med(signedAppr)}</div><div class="l">С согласованием: от подачи до подписи</div><div class="d">медиана, ${signedAppr.length} подписанных · приблизительно</div></div>
     <div class="tile"><div class="n">${pct(failed.length, list.length)}</div><div class="l">Не состоялись</div><div class="d">отказ кандидата, торги, отклонён</div></div>
     <div class="tile blue"><div class="n">${pct(hrFull.length, withHr.length)}</div><div class="l">Анкета для кадров заполнена полностью</div><div class="d">среди подписанных</div></div>
   </div>
